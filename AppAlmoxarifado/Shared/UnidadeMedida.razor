@@ -12,9 +12,10 @@
 }
 
 @code {
+
     private string unidade;
 
-    public IList<UnidadeMedidaViewModel> unidadeMedidaViewModels;
+    public IList<UnidadeMedidaViewModel> unidadeMedidaViewModels = new List<UnidadeMedidaViewModel>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -31,10 +32,8 @@
     public async Task OnUnidadeChanged(ChangeEventArgs e)
     {
         var unidadeMedidaViewModels = e?.Value;
-
         Unidade = e?.Value?.ToString();
         await UnidadeChanged.InvokeAsync(Unidade);
     }
-
 
 }

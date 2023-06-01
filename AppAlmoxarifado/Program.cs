@@ -7,5 +7,5 @@ IConfiguration Configuration = builder.Configuration;
 
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
-builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5200/api/") });
+builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5200/api/sr/") });
 await builder.Build().RunAsync();

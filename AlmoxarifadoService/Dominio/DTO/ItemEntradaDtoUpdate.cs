@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 namespace AlmoxarifadoService.Dominio.DTO
 {
-    public class ItemEntradaCreateDto
+    public class ItemEntradaDtoUpdate
     {
         [Required]
         public DateTime? DtEntrada { get; set; }
@@ -16,9 +16,5 @@ namespace AlmoxarifadoService.Dominio.DTO
 
         [MaxLength(255)]
         public string? Observacao { get; set; }
-
-        [Required]
-        public int? ItemId { get; set; }
-        public string NomeCompleto { get; set; }
     }
 }

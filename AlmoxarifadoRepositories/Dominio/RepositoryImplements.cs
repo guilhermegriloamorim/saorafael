@@ -4,53 +4,40 @@ using AlmoxarifadoRepositories.Data;
 using AlmoxarifadoRepositories.Dominio;
 namespace AlmoxarifadoRepositories.Interfaces
 {
-
-    //RepositoryBarraca
-    public class RepositoryBarraca : RepositoryBase<Barraca, AlmoxarifadoDbContext>, IBarracaRepository
+    public class RepositoryBarraca : RepositoryBase<Barraca, AlmoxarifadoDbContext>, IRepositoryBarrca
     {
         public RepositoryBarraca(AlmoxarifadoDbContext dbContex) : base(dbContex)
         {
         }
     }
-
-    //RepositoryItem
-    public class RepositoryItem : RepositoryBase<Item, AlmoxarifadoDbContext>, IItemRepository
+    public class RepositoryItem : RepositoryBase<Item, AlmoxarifadoDbContext>, IRepositoryItem
     {
         public RepositoryItem(AlmoxarifadoDbContext dbContex) : base(dbContex)
         {
         }
     }
-
-    //RepositoryItemEntrada
-    public class RepositoryItemEntrada : RepositoryBase<ItemEntrada, AlmoxarifadoDbContext>, IItemEntradaRepository
+    public class RepositoryItemEntrada : RepositoryBase<ItemEntrada, AlmoxarifadoDbContext>, IRepositoryItemEntrada
     {
         public RepositoryItemEntrada(AlmoxarifadoDbContext dbContex) : base(dbContex)
         {
         }
     }
-
-    //RepositoryItemSaida
-    public class RepositoryItemSaida : RepositoryBase<ItemSaida, AlmoxarifadoDbContext>, IItemSaidaRepository
+    public class RepositoryItemSaida : RepositoryBase<ItemSaida, AlmoxarifadoDbContext>, IRepositoryItemSaida
     {
         public RepositoryItemSaida(AlmoxarifadoDbContext dbContex) : base(dbContex)
         {
         }
     }
-
-    //RepositoryItemSaidaViewModel
-    public class RepositoryItemSaidaViewModel : RepositoryBase<ItemSaidaViewModel, AlmoxarifadoDbContext>, IItemSaidaViewModelRepository
+    public class RepositoryItemSaidaViewModel : RepositoryBase<ItemSaidaViewModel, AlmoxarifadoDbContext>, IRepositoryItemSaidaViewModel
     {
         public RepositoryItemSaidaViewModel(AlmoxarifadoDbContext dbContex) : base(dbContex)
         {
         }
     }
-
-    //RepositoryUnidadeMedidaViewModel
-    public class RepositoryUnidadeMedidaViewModel : RepositoryBase<UnidadeMedidaViewModel, AlmoxarifadoDbContext>, IUnidadeMedidaViewModelRepository
+    public class RepositoryUnidadeMedidaViewModel : RepositoryBase<UnidadeMedidaViewModel, AlmoxarifadoDbContext>, IRepositoryUnidadeMedidaViewModel
     {
         public RepositoryUnidadeMedidaViewModel(AlmoxarifadoDbContext dbContex) : base(dbContex)
         {
         }
     }
-
 }

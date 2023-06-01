@@ -1,13 +1,12 @@
 ﻿namespace AlmoxarifadoService.Dominio.DTO
 {
-    public class ItemSaidaReadDto
+    public class ItemEntradaDtoRead
     {
         public int? Id { get; set; }
-        public DateTime? DtSaida { get; set; }
+        public DateTime? DtEntrada { get; set; }
         public decimal? Quantidade { get; set; }
         public string? Unidade { get; set; }
         public string? Observacao { get; set; }
-        public int? BarracaId { get; set; }
         public int? ItemId { get; set; }
     }
 }

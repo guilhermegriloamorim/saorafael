@@ -1,5 +1,4 @@
-﻿
-@page "/item"
+﻿@page "/item"
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 <h3>Cadastro de Itens</h3>
@@ -66,8 +65,8 @@
 @code {
 
     private string MessageErro { get; set; }
-    private ItemCreateDto ItemDto { get; set; }
-    private List<ItemCreateDto> ItensDto { get; set; }
+    private ItemDtoCreate ItemDto { get; set; }
+    private List<ItemDtoCreate> ItensDto { get; set; }
 
     protected override void OnInitialized()
     {
@@ -83,12 +82,12 @@
         Clear();
     }
 
-    private void Edit(ItemCreateDto itemDto)
+    private void Edit(ItemDtoCreate itemDto)
     {
         ItemDto = itemDto;
     }
 
-    private void Remove(ItemCreateDto itemDto)
+    private void Remove(ItemDtoCreate itemDto)
     {
         ItensDto.Remove(itemDto);
     }
@@ -111,7 +110,7 @@
 
     private async Task SalvarAsync()
     {
-        var response = await HttpClient.PostAsJsonAsync<IList<ItemCreateDto>>("item", ItensDto);
+        var response = await HttpClient.PostAsJsonAsync<IList<ItemDtoCreate>>("item", ItensDto);
         if (response.IsSuccessStatusCode)
         {
             NavigationManager.NavigateTo("itens");

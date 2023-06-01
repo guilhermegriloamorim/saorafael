@@ -1,6 +1,6 @@
 ﻿namespace AlmoxarifadoService.Dominio.DTO
 {
-    public class ItemReadDto
+    public class ItemDtoRead
     {
         public int? Id { get; set; }    
         public string? Codigo { get; set; }

@@ -12,7 +12,7 @@
             {
                 <input class="form-control form-select-lg mb-3" onfocus="this.value=''" list="DataListItemOptions" id="DataListItem" placeholder="Selecione um Item..." @onchange="@((@args) => SelectItem(args.Value))">
                 <datalist id="DataListItemOptions">
-                    @foreach (ItemReadDto item in ItensDtos)
+                    @foreach (ItemDtoRead item in ItensDtos)
                     {
                         <option value="@item.ToString()">@item.ToString()</option>
                     }
@@ -101,11 +101,11 @@ else
     private string displayNone;
     private string MessageErro { get; set; }
 
-    public ItemEntradaCreateDto ItemEntrada { get; set; } = new() { DtEntrada = DateTime.Now, Unidade = "UND", Quantidade = 1 };
-    public List<ItemEntradaCreateDto> ItensEntradaCreateDto { get; set; } = new();
+    public ItemEntradaDtoCreate ItemEntrada { get; set; } = new() { DtEntrada = DateTime.Now, Unidade = "UND", Quantidade = 1 };
+    public List<ItemEntradaDtoCreate> ItensEntradaCreateDto { get; set; } = new();
 
-    public ItemReadDto ItemReadDto { get; set; } = new();
-    public List<ItemReadDto> ItensDtos { get; set; } = new();
+    public ItemDtoRead ItemReadDto { get; set; } = new();
+    public List<ItemDtoRead> ItensDtos { get; set; } = new();
 
     private void Add()
     {
@@ -118,7 +118,7 @@ else
     protected override async void OnInitialized()
     {
         onLoad = false;
-        var itensReadDtos = await HttpClient.GetFromJsonAsync<IList<ItemReadDto>>("item");
+        var itensReadDtos = await HttpClient.GetFromJsonAsync<IList<ItemDtoRead>>("item");
 
         if (itensReadDtos.Any())
             ItensDtos.AddRange(itensReadDtos.ToArray());
@@ -141,7 +141,7 @@ else
 
     private async Task SalvarAsync()
     {
-        var response = await HttpClient.PostAsJsonAsync<IList<ItemEntradaCreateDto>>("itemEntrada", ItensEntradaCreateDto);
+        var response = await HttpClient.PostAsJsonAsync<IList<ItemEntradaDtoCreate>>("itemEntrada", ItensEntradaCreateDto);
         if (response.IsSuccessStatusCode)
         {
             NavigationManager.NavigateTo("home");
@@ -150,7 +150,7 @@ else
         StateHasChanged();
     }
 
-    private void Remove(ItemEntradaCreateDto itemDto)
+    private void Remove(ItemEntradaDtoCreate itemDto)
     {
         ItensEntradaCreateDto.Remove(itemDto);
     }

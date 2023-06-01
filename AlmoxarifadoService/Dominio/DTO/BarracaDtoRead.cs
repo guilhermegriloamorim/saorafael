@@ -1,6 +1,6 @@
 ﻿namespace AlmoxarifadoService.Dominio.DTO
 {
-    public class BarracaReadDto
+    public class BarracaDtoRead
     {
         public int? Id { get; set; }
         public string? Nome { get; set; }

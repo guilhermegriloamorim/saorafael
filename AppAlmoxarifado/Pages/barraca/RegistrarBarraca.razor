@@ -33,7 +33,7 @@
 @code {
 
     private string MessageErro { get; set; }
-    private BarracaCreateDto BarracaDto { get; set; }
+    private BarracaDtoCreate BarracaDto { get; set; }
 
     protected override void OnInitialized()
     {
@@ -52,7 +52,7 @@
 
     private async Task SalvarAsync()
     {
-        var response = await HttpClient.PostAsJsonAsync<BarracaCreateDto>("barraca", BarracaDto);
+        var response = await HttpClient.PostAsJsonAsync<BarracaDtoCreate>("barraca", BarracaDto);
         if (response.IsSuccessStatusCode)
         {
             Listar();

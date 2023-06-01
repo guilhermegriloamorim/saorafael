@@ -1,6 +1,5 @@
 ﻿using Almoxarifado.Dominio.Model;
 using Almoxarifado.Dominio.ViewModel;
-
 namespace AlmoxarifadoRepositories.Interfaces
 {
     public interface IRepositoryBase<T> where T : class
@@ -12,33 +11,22 @@ namespace AlmoxarifadoRepositories.Interfaces
         Task<bool> DeleteAsync(Guid id);
     }
 
-    //Barraca
-    public interface IBarracaRepository : IRepositoryBase<Barraca>
+    public interface IRepositoryBarrca : IRepositoryBase<Barraca>
     {
     }
-
-    //Item
-    public interface IItemRepository : IRepositoryBase<Item>
+    public interface IRepositoryItem : IRepositoryBase<Item>
     {
     }
-
-    //ItemEntrada
-    public interface IItemEntradaRepository : IRepositoryBase<ItemEntrada>
+    public interface IRepositoryItemEntrada : IRepositoryBase<ItemEntrada>
     {
     }
-
-    //ItemSaida
-    public interface IItemSaidaRepository : IRepositoryBase<ItemSaida>
+    public interface IRepositoryItemSaida : IRepositoryBase<ItemSaida>
     {
     }
-
-    //ItemSaidaViewModel
-    public interface IItemSaidaViewModelRepository : IRepositoryBase<ItemSaidaViewModel>
+    public interface IRepositoryItemSaidaViewModel : IRepositoryBase<ItemSaidaViewModel>
     {
     }
-
-    //UnidadeMedidaViewModel
-    public interface IUnidadeMedidaViewModelRepository : IRepositoryBase<UnidadeMedidaViewModel>
+    public interface IRepositoryUnidadeMedidaViewModel : IRepositoryBase<UnidadeMedidaViewModel>
     {
     }
 }

@@ -47,11 +47,11 @@ else
 
     private string MessageErro { get; set; }
 
-    private List<ItemReadDto> ItensDto { get; set; } = new();
+    private List<ItemDtoRead> ItensDto { get; set; } = new();
 
     protected override async void OnInitialized()
     {
-        var result = await HttpClient.GetFromJsonAsync<IList<ItemReadDto>>("item");
+        var result = await HttpClient.GetFromJsonAsync<IList<ItemDtoRead>>("item");
         if (result != null)
         {
             ItensDto.AddRange(result.ToArray());

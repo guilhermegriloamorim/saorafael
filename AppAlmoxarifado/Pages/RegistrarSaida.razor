@@ -12,7 +12,7 @@
             {
                 <input class="form-control form-select-lg mb-3" list="DataListBarracaOptions" id="DataListBarrca" placeholder="Selecione uma Barraca..." @onchange="@((args) => SelectBarraca(args.Value))">
                 <datalist id="DataListBarracaOptions">
-                    @foreach (BarracaReadDto barraca in BarracasDto)
+                    @foreach (BarracaDtoRead barraca in BarracasDto)
                     {
                         <option value="@barraca.ToString()">@barraca.ToString()</option>
                     }
@@ -26,7 +26,7 @@
                 {
                     <input class="form-control form-select-lg mb-3" onfocus="this.value=''" list="DataListItemOptions" id="DataListItem" placeholder="Selecione um Item..." @onchange="@((@args) => SelectItem(args.Value))">
                     <datalist id="DataListItemOptions">
-                        @foreach (ItemReadDto item in ItensDtos)
+                        @foreach (ItemDtoRead item in ItensDtos)
                         {
                             <option value="@item.ToString()">@item.ToString()</option>
                         }
@@ -105,18 +105,20 @@ else
 }
 
 @code {
+
+
     private bool onLoad = false;
     private string displayNone;
     private string MessageErro { get; set; }
 
-    public ItemSaidaCreateDto ItemSaidaCreateDto { get; set; } = new() { DtSaida = DateTime.Now, Unidade = "UND", Quantidade = 1 };
-    public List<ItemSaidaCreateDto> ItensSaidaCreateDto { get; set; } = new();
+    public ItemSaidaDtoCreate ItemSaidaCreateDto { get; set; } = new() { DtSaida = DateTime.Now, Unidade = "UND", Quantidade = 1 };
+    public List<ItemSaidaDtoCreate> ItensSaidaCreateDto { get; set; } = new();
 
-    public ItemReadDto ItemReadDto { get; set; } = new();
-    public List<ItemReadDto> ItensDtos { get; set; } = new();
+    public ItemDtoRead ItemReadDto { get; set; } = new();
+    public List<ItemDtoRead> ItensDtos { get; set; } = new();
 
-    public BarracaReadDto BarracaReadDto { get; set; } = new();
-    public List<BarracaReadDto> BarracasDto { get; set; } = new();
+    public BarracaDtoRead BarracaReadDto { get; set; } = new();
+    public List<BarracaDtoRead> BarracasDto { get; set; } = new();
 
     private void Add()
     {
@@ -129,11 +131,11 @@ else
     protected override async void OnInitialized()
     {
         onLoad = false;
-        var barracasRedDtos = await HttpClient.GetFromJsonAsync<IList<BarracaReadDto>>("barraca");
+        var barracasRedDtos = await HttpClient.GetFromJsonAsync<IList<BarracaDtoRead>>("barraca");
         if (barracasRedDtos.Any())
             BarracasDto.AddRange(barracasRedDtos.ToArray());
 
-        var itensReadDtos = await HttpClient.GetFromJsonAsync<IList<ItemReadDto>>("item");
+        var itensReadDtos = await HttpClient.GetFromJsonAsync<IList<ItemDtoRead>>("item");
         if (itensReadDtos.Any())
             ItensDtos.AddRange(itensReadDtos.ToArray());
         onLoad = true;
@@ -164,7 +166,7 @@ else
 
     private async Task SalvarAsync()
     {
-        var response = await HttpClient.PostAsJsonAsync<IList<ItemSaidaCreateDto>>("itemSaida", ItensSaidaCreateDto);
+        var response = await HttpClient.PostAsJsonAsync<IList<ItemSaidaDtoCreate>>("itemSaida", ItensSaidaCreateDto);
         if (response.IsSuccessStatusCode)
         {
             NavigationManager.NavigateTo("home");
@@ -173,7 +175,7 @@ else
         StateHasChanged();
     }
 
-    private void Remove(ItemSaidaCreateDto itemDto)
+    private void Remove(ItemSaidaDtoCreate itemDto)
     {
         ItensSaidaCreateDto.Remove(itemDto);
     }

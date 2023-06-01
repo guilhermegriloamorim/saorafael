@@ -1,4 +1,5 @@
 ﻿using Almoxarifado.Dominio.Model;
+using Almoxarifado.Dominio.ViewModel;
 using AlmoxarifadoService.Dominio.DTO;
 using AutoMapper;
 namespace AlmoxarifadoService.MapperConfiguration
@@ -7,21 +8,25 @@ namespace AlmoxarifadoService.MapperConfiguration
     {
         public ConfigureProfile()
         {
-            CreateMap<Barraca, BarracaCreateDto>().ReverseMap();
-            CreateMap<Barraca, BarracaUpdateDto>().ReverseMap();
-            CreateMap<Barraca, BarracaReadDto>().ReverseMap();
+            CreateMap<Barraca, BarracaDtoCreate>().ReverseMap();
+            CreateMap<Barraca, BarracaDtoUpdate>().ReverseMap();
+            CreateMap<Barraca, BarracaDtoRead>().ReverseMap();
 
-            CreateMap<Item, ItemCreateDto>().ReverseMap();
-            CreateMap<Item, ItemUpdateDto>().ReverseMap();
-            CreateMap<Item, ItemReadDto>().ReverseMap();
+            CreateMap<Item, ItemDtoCreate>().ReverseMap();
+            CreateMap<Item, ItemDtoUpdate>().ReverseMap();
+            CreateMap<Item, ItemDtoRead>().ReverseMap();
 
-            CreateMap<ItemSaida, ItemSaidaCreateDto>().ReverseMap();
-            CreateMap<ItemSaida, ItemSaidaUpdateDto>().ReverseMap();
-            CreateMap<ItemSaida, ItemSaidaReadDto>().ReverseMap();
+            CreateMap<ItemSaida, ItemSaidaDtoCreate>().ReverseMap();
+            CreateMap<ItemSaida, ItemSaidaDtoUpdate>().ReverseMap();
+            CreateMap<ItemSaida, ItemSaidaDtoRead>().ReverseMap();
 
-            CreateMap<ItemEntrada, ItemEntradaCreateDto>().ReverseMap();
-            CreateMap<ItemEntrada, ItemEntradaUpdateDto>().ReverseMap();
-            CreateMap<ItemEntrada, ItemEntradaReadDto>().ReverseMap();
+            CreateMap<ItemEntrada, ItemEntradaDtoCreate>().ReverseMap();
+            CreateMap<ItemEntrada, ItemEntradaDtoUpdate>().ReverseMap();
+            CreateMap<ItemEntrada, ItemEntradaDtoRead>().ReverseMap();
+
+            CreateMap<ItemSaidaViewModel, ItemSaidaViewModel>().ReverseMap();
+            CreateMap<UnidadeMedidaViewModel, UnidadeMedidaViewModel>().ReverseMap();
+
         }
     }
 }

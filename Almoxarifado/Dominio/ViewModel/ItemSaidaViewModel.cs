@@ -1,10 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-namespace Almoxarifado.Dominio.ViewModel
+﻿namespace Almoxarifado.Dominio.ViewModel
 {
     public class ItemSaidaViewModel
     {

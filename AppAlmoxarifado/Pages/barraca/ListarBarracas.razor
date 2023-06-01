@@ -42,11 +42,11 @@ else
 
     private string MessageErro { get; set; }
 
-    private List<BarracaReadDto> BarracasDto { get; set; } = new();
+    private List<BarracaDtoRead> BarracasDto { get; set; } = new();
 
     protected override async void OnInitialized()
     {
-        var result = await HttpClient.GetFromJsonAsync<IList<BarracaReadDto>>("barraca");
+        var result = await HttpClient.GetFromJsonAsync<IList<BarracaDtoRead>>("barraca");
         if (result != null)
         {
             BarracasDto.AddRange(result.ToArray());

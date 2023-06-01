@@ -10,7 +10,7 @@
     }
 
     //BarracaService
-    public interface IBarracaService : IServiceBase
+    public interface IServiceBarraca : IServiceBase
     {
     }
 
@@ -20,27 +20,32 @@
     }
 
     //ItemService
-    public interface IItemService : IServiceBase
+    public interface IServiceItem : IServiceBase
     {
     }
      
     //ItemSaidaService
-    public interface IItemSaidaService : IServiceBase
+    public interface IServiceItemSaida : IServiceBase
     {
     }
 
     //ItemEntradaService
-    public interface IItemEntradaService : IServiceBase
+    public interface IServiceItemEntrada : IServiceBase
     {
     }
 
     //ItemSaidaViewModel
-    public interface IItemSaidaViewModel : IServiceBase
+    public interface IServiceItemSaidaViewModel : IServiceBase
     {
     }
 
     //ItemEntradaViewModel
-    public interface IItemEntradaViewModel : IServiceBase
+    public interface IServiceItemEntradaViewModel : IServiceBase
+    {
+    }
+
+    //UnidadeMedidaService
+    public interface IServiceUnidadeMedidaViewModel : IServiceBase
     {
     }
 }

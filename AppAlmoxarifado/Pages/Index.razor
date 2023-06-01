@@ -1,5 +1,6 @@
 ﻿@page "/"
 @page "/home"
+
 @inject HttpClient HttpClient
 
 @if (onLoad)
@@ -10,7 +11,7 @@
         <input class="form-control form-select-lg mb-3" list="DataListBarracaOptions" id="DataListBarrca" placeholder="Selecione uma Barraca..." @onchange="@((args) => SelectBarraca(args.Value))">
         <datalist id="DataListBarracaOptions">
             <option value="Todos">Todos</option>
-            @foreach (BarracaReadDto barraca in BarracasDto)
+            @foreach (BarracaDtoRead barraca in BarracasDto)
             {
                 <option value="@barraca.Nome">@barraca.Nome</option>
             }
@@ -53,8 +54,8 @@ else
 @code
 {
     private bool onLoad = false;
-    public BarracaReadDto BarracaReadDto { get; set; } = new();
-    public List<BarracaReadDto> BarracasDto { get; set; } = new();
+    public BarracaDtoRead BarracaReadDto { get; set; } = new();
+    public List<BarracaDtoRead> BarracasDto { get; set; } = new();
 
     public List<ItemSaidaViewModel> Original { get; set; } = new();
     public List<ItemSaidaViewModel> ItensSaidaViewModel { get; set; } = new();
@@ -63,7 +64,7 @@ else
     protected override async void OnInitialized()
     {
         onLoad = false;
-        var barracasRedDtos = await HttpClient.GetFromJsonAsync<IList<BarracaReadDto>>("barraca");
+        var barracasRedDtos = await HttpClient.GetFromJsonAsync<IList<BarracaDtoRead>>("barraca");
         if (barracasRedDtos.Any())
             BarracasDto.AddRange(barracasRedDtos.ToArray());
 

@@ -1,6 +1,5 @@
 ﻿using AlmoxarifadoRepositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-
 namespace AlmoxarifadoRepositories.Dominio
 {
     public abstract class RepositoryBase<TEntity, TContext> : IRepositoryBase<TEntity> where TEntity : class where TContext : DbContext
