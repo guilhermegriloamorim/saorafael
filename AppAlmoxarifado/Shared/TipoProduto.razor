@@ -1,0 +1,30 @@
+﻿<select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" @onchange="OnTipoDeItemChanged">
+    <option selected value="">Selecione uma opção</option>
+    @foreach (var tipo in _tipo)
+    {
+        <option value="@tipo">@tipo</option>
+    }
+</select>
+@code {
+
+    private IList<string> _tipo;
+
+    [Parameter]
+    public string? TipoDeItem { get; set; }
+
+    [Parameter]
+    public EventCallback<string> TipoDeItemChanged { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        _tipo = new List<string>() { "Produto", "Embalgem", "Limpeza" };
+        return base.OnInitializedAsync();
+    }
+
+    public async Task OnTipoDeItemChanged(ChangeEventArgs e)
+    {
+        TipoDeItem = e?.Value?.ToString();
+        await TipoDeItemChanged.InvokeAsync(TipoDeItem);
+    }
+
+}

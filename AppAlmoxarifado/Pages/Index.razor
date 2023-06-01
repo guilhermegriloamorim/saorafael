@@ -1,0 +1,86 @@
+﻿@page "/"
+@page "/home"
+@inject HttpClient HttpClient
+
+@if (onLoad)
+{
+    <h3>Itens de Saida</h3>
+    @if (BarracasDto.Any())
+    {
+        <input class="form-control form-select-lg mb-3" list="DataListBarracaOptions" id="DataListBarrca" placeholder="Selecione uma Barraca..." @onchange="@((args) => SelectBarraca(args.Value))">
+        <datalist id="DataListBarracaOptions">
+            <option value="Todos">Todos</option>
+            @foreach (BarracaReadDto barraca in BarracasDto)
+            {
+                <option value="@barraca.Nome">@barraca.Nome</option>
+            }
+        </datalist>
+    }
+    <br />
+    <table class="table">
+        <thead class="table-primary">
+            <tr>
+                <th>NOME_BARRCA</th>
+                <th>DT_SAIDA</th>
+                <th>COD_ITEM</th>
+                <th>DESCR_ITEM</th>
+                <th>UNIDADE</th>
+                <th>QUANTIDADE</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in ItensSaidaViewModel)
+            {
+                <tr>
+                    <td>@item.NOME_BARRCA</td>
+                    <td>@item.DT_SAIDA</td>
+                    <td>@item.COD_ITEM</td>
+                    <td>@item.DESCR_ITEM</td>
+                    <td>@item.UNIDADE</td>
+                    <td>@item.QTD</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+
+}
+else
+{
+    <br />
+    <h4>aguarde...</h4>
+}
+@code
+{
+    private bool onLoad = false;
+    public BarracaReadDto BarracaReadDto { get; set; } = new();
+    public List<BarracaReadDto> BarracasDto { get; set; } = new();
+
+    public List<ItemSaidaViewModel> Original { get; set; } = new();
+    public List<ItemSaidaViewModel> ItensSaidaViewModel { get; set; } = new();
+
+
+    protected override async void OnInitialized()
+    {
+        onLoad = false;
+        var barracasRedDtos = await HttpClient.GetFromJsonAsync<IList<BarracaReadDto>>("barraca");
+        if (barracasRedDtos.Any())
+            BarracasDto.AddRange(barracasRedDtos.ToArray());
+
+        var itensSaidaViewModel = await HttpClient.GetFromJsonAsync<IList<ItemSaidaViewModel>>("itemSaida");
+        if (itensSaidaViewModel.Any())
+            Original.AddRange(itensSaidaViewModel.ToArray());
+
+        onLoad = true;
+        StateHasChanged();
+    }
+
+    public void SelectBarraca(object value)
+    {
+        if (value.ToString() == "Todos" || string.IsNullOrEmpty(value.ToString()))
+            ItensSaidaViewModel = Original.OrderByDescending(d => d.DT_SAIDA).ToList();
+        else
+            ItensSaidaViewModel = Original.Where(i => i.NOME_BARRCA == value.ToString()).OrderByDescending(d => d.DT_SAIDA).ToList();
+    }
+
+}

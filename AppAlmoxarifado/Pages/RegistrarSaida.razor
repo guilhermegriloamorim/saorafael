@@ -1,0 +1,198 @@
+﻿@page "/saida"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject IJSRuntime js
+<h3>Registrar Saida @BarracaReadDto.Nome</h3>
+<br />
+@if (onLoad)
+{
+    <EditForm Model="@ItemSaidaCreateDto" OnValidSubmit="@Add">
+        <div class="mb-3" style="display:@displayNone">
+            @if (BarracasDto.Any())
+            {
+                <input class="form-control form-select-lg mb-3" list="DataListBarracaOptions" id="DataListBarrca" placeholder="Selecione uma Barraca..." @onchange="@((args) => SelectBarraca(args.Value))">
+                <datalist id="DataListBarracaOptions">
+                    @foreach (BarracaReadDto barraca in BarracasDto)
+                    {
+                        <option value="@barraca.ToString()">@barraca.ToString()</option>
+                    }
+                </datalist>
+            }
+        </div>
+        @if (displayNone == "none")
+        {
+            <div class="mb-3">
+                @if (ItensDtos.Any())
+                {
+                    <input class="form-control form-select-lg mb-3" onfocus="this.value=''" list="DataListItemOptions" id="DataListItem" placeholder="Selecione um Item..." @onchange="@((@args) => SelectItem(args.Value))">
+                    <datalist id="DataListItemOptions">
+                        @foreach (ItemReadDto item in ItensDtos)
+                        {
+                            <option value="@item.ToString()">@item.ToString()</option>
+                        }
+                    </datalist>
+                }
+            </div>
+
+            <div class="mb-3" style="display:none">
+                <label for="@nameof(ItemSaidaCreateDto.NomeCompleto)" class="form-label">Produto</label>
+                <InputText class="form-control" id="@nameof(ItemSaidaCreateDto.NomeCompleto)" @bind-Value="ItemSaidaCreateDto.NomeCompleto" />
+            </div>
+
+           <UnidadeMedida @bind-Unidade="ItemSaidaCreateDto.Unidade" />
+
+            <div class="mb-3">
+                <label for="@nameof(ItemSaidaCreateDto.Quantidade)" class="form-label">Quantidade</label>
+                <InputNumber class="form-control" id="@nameof(ItemSaidaCreateDto.Quantidade)" @bind-Value="ItemSaidaCreateDto.Quantidade" />
+            </div>
+
+            <div class="mb-3">
+                <label for="@nameof(ItemSaidaCreateDto.Observacao)" class="form-label">Descricão</label>
+                <InputTextArea class="form-control" rows="3" id="@nameof(ItemSaidaCreateDto.Observacao)" @bind-Value="ItemSaidaCreateDto.Observacao" />
+            </div>
+
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="d-grid gap-2 d-md-block">
+                <button type="submit" class="btn btn-primary">Adicionar</button>
+                <button type="button" class="btn btn-primary" @onclick="@Clear">Limpar</button>
+            </div>
+        }
+    </EditForm>
+    <br />
+    <table class="table">
+        <thead class="table-primary">
+            <tr>
+                <th>Item</th>
+                <th>Unidade</th>
+                <th>Quantidade</th>
+                <th>Obs.</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var itemDto in ItensSaidaCreateDto)
+            {
+                <tr>
+                    <td>@itemDto.NomeCompleto</td>
+                    <td>@itemDto.Unidade</td>
+                    <td>@itemDto.Quantidade</td>
+                    <td>@itemDto.Observacao</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" @onclick="@(e => Remove(itemDto))">Remover</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+    <div class="d-grid gap-2 d-md-block">
+        <button type="button" class="btn btn-primary" @onclick="@SalvarAsync">Salvar </button>
+    </div>
+    <br />
+}
+else
+{
+    <br />
+    <h4>aguarde...</h4>
+}
+
+@if (!string.IsNullOrWhiteSpace(MessageErro))
+{
+    <div class="border-1 alert-warning">
+        <p>@MessageErro</p>
+    </div>
+}
+
+@code {
+    private bool onLoad = false;
+    private string displayNone;
+    private string MessageErro { get; set; }
+
+    public ItemSaidaCreateDto ItemSaidaCreateDto { get; set; } = new() { DtSaida = DateTime.Now, Unidade = "UND", Quantidade = 1 };
+    public List<ItemSaidaCreateDto> ItensSaidaCreateDto { get; set; } = new();
+
+    public ItemReadDto ItemReadDto { get; set; } = new();
+    public List<ItemReadDto> ItensDtos { get; set; } = new();
+
+    public BarracaReadDto BarracaReadDto { get; set; } = new();
+    public List<BarracaReadDto> BarracasDto { get; set; } = new();
+
+    private void Add()
+    {
+        if (!ItensSaidaCreateDto.Contains(ItemSaidaCreateDto))
+            ItensSaidaCreateDto.Add(ItemSaidaCreateDto);
+
+        Clear();
+    }
+
+    protected override async void OnInitialized()
+    {
+        onLoad = false;
+        var barracasRedDtos = await HttpClient.GetFromJsonAsync<IList<BarracaReadDto>>("barraca");
+        if (barracasRedDtos.Any())
+            BarracasDto.AddRange(barracasRedDtos.ToArray());
+
+        var itensReadDtos = await HttpClient.GetFromJsonAsync<IList<ItemReadDto>>("item");
+        if (itensReadDtos.Any())
+            ItensDtos.AddRange(itensReadDtos.ToArray());
+        onLoad = true;
+        StateHasChanged();
+    }
+
+    public void SelectItem(object value)
+    {
+        if (string.IsNullOrWhiteSpace(value.ToString()))
+            return;
+
+        var id = int.Parse(value.ToString().Split(" ")[0].ToString());
+        ItemReadDto = ItensDtos.FirstOrDefault(i => i.Id == id);
+        ItemSaidaCreateDto.ItemId = ItemReadDto.Id;
+        ItemSaidaCreateDto.NomeCompleto = ItemReadDto.ToString();
+    }
+
+    public void SelectBarraca(object value)
+    {
+        if (string.IsNullOrWhiteSpace(value.ToString()))
+            return;
+
+        var id = int.Parse(value.ToString().Split(" ")[0].ToString());
+        BarracaReadDto = BarracasDto.FirstOrDefault(i => i.Id == id);
+        ItemSaidaCreateDto.BarracaId = BarracaReadDto.Id;
+        displayNone = "none";
+    }
+
+    private async Task SalvarAsync()
+    {
+        var response = await HttpClient.PostAsJsonAsync<IList<ItemSaidaCreateDto>>("itemSaida", ItensSaidaCreateDto);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("home");
+        }
+        MessageErro = await response.Content.ReadAsStringAsync();
+        StateHasChanged();
+    }
+
+    private void Remove(ItemSaidaCreateDto itemDto)
+    {
+        ItensSaidaCreateDto.Remove(itemDto);
+    }
+
+    private void Clear()
+    {
+        ItemReadDto = new();
+        ItemSaidaCreateDto = new() { DtSaida = DateTime.Now, Unidade = "UND", Quantidade = 1, BarracaId = BarracaReadDto.Id };
+        Focus("DataListItem");
+    }
+
+    private void ClearAll()
+    {
+        Clear();
+        ItensSaidaCreateDto = new();
+    }
+
+    public async Task Focus(string elementId)
+    {
+        await js.InvokeVoidAsync("focusById", elementId);
+    }
+}

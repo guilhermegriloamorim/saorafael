@@ -1,0 +1,47 @@
+﻿@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+@if (ItensReadDto.Any())
+{
+    <div>
+        <label for="exampleDataList" class="form-label">Datalist example</label>
+        <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search..." @onchange="@((args)=> Select(args.Value))">
+        <datalist id="datalistOptions">
+            @foreach (ItemReadDto item in ItensReadDto)
+            {
+                <option value="@item.ToString()">@item.ToString()</option>
+            }
+        </datalist>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public int? Id { get; set; }
+
+    [Parameter]
+    public EventCallback<string> TipoDeItemChanged { get; set; }
+
+    [Parameter]
+
+    public int Descricao { get; set; }
+
+    public ItemReadDto ItemReadDto { get; set; }
+    public List<ItemReadDto> ItensReadDto { get; set; } = new();
+
+    protected override async void OnInitialized()
+    {
+        var result = await HttpClient.GetFromJsonAsync<IList<ItemReadDto>>("item");
+        if (result != null)
+        {
+            ItensReadDto.AddRange(result.ToArray());
+            StateHasChanged();
+        }
+    }
+
+    public void Select(object value)
+    {
+        ItemReadDto = ItensReadDto.FirstOrDefault(i => i.Id == (int)value);
+    }
+}

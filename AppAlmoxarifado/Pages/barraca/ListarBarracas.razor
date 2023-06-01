@@ -1,0 +1,62 @@
+﻿@page "/barracas"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+<h3>Barracas</h3>
+@if (BarracasDto.Any())
+{
+    <table class="table">
+        <thead class="table-primary">
+            <tr>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var barracaDto in BarracasDto)
+            {
+                <tr>
+                    <td>@barracaDto.Id</td>
+                    <td>@barracaDto.Nome</td>
+                    <td>@barracaDto.Descricao</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+}
+else
+{
+    <h4>aguarde...</h4>
+}
+<div class="d-grid gap-2 d-md-block">
+    <button type="button" class="btn btn-primary" @onclick="@Adicionar">Adicionar</button>
+</div>
+@if (!string.IsNullOrWhiteSpace(MessageErro))
+{
+    <div class="border-1 alert-warning">
+        <p>@MessageErro</p>
+    </div>
+}
+@code {
+
+    private string MessageErro { get; set; }
+
+    private List<BarracaReadDto> BarracasDto { get; set; } = new();
+
+    protected override async void OnInitialized()
+    {
+        var result = await HttpClient.GetFromJsonAsync<IList<BarracaReadDto>>("barraca");
+        if (result != null)
+        {
+            BarracasDto.AddRange(result.ToArray());
+            StateHasChanged();
+        }
+    }
+
+    public void Adicionar()
+    {
+        NavigationManager.NavigateTo("barraca");
+    }
+
+}

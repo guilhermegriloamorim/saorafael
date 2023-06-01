@@ -1,0 +1,40 @@
+﻿@inject HttpClient HttpClient
+
+@if (unidadeMedidaViewModels != null)
+{
+    <input class="form-control form-select-lg mb-3" list="DataListUnidadeMedida" id="DataListUnidade" placeholder="Selecione a unidade de medida "  @onchange="@(e => OnUnidadeChanged(e))" >
+    <datalist id="DataListUnidadeMedida">
+        @foreach (var item in unidadeMedidaViewModels)
+        {
+            <option value="@item">@item.DESCRICAO</option>
+        }
+    </datalist>
+}
+
+@code {
+    private string unidade;
+
+    public IList<UnidadeMedidaViewModel> unidadeMedidaViewModels;
+
+    protected override async Task OnInitializedAsync()
+    {
+        unidadeMedidaViewModels = await HttpClient.GetFromJsonAsync<IList<UnidadeMedidaViewModel>>("unidadeMedida");
+        StateHasChanged();
+    }
+
+    [Parameter]
+    public string? Unidade { get; set; }
+
+    [Parameter]
+    public EventCallback<string> UnidadeChanged { get; set; }
+
+    public async Task OnUnidadeChanged(ChangeEventArgs e)
+    {
+        var unidadeMedidaViewModels = e?.Value;
+
+        Unidade = e?.Value?.ToString();
+        await UnidadeChanged.InvokeAsync(Unidade);
+    }
+
+
+}

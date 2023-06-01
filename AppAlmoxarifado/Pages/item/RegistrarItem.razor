@@ -1,0 +1,123 @@
+﻿
+@page "/item"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+<h3>Cadastro de Itens</h3>
+<EditForm Model="@ItemDto" OnValidSubmit="@Add">
+    <div class="mb-3">
+        <label for="@nameof(ItemDto.Codigo)" class="form-label">Código</label>
+        <InputText class="form-control" id="@nameof(ItemDto.Codigo)" @bind-Value="ItemDto.Codigo" />
+    </div>
+    <div class="mb-3">
+        <label for="@nameof(ItemDto.Descricao)" class="form-label">Descricão</label>
+        <InputTextArea class="form-control" rows="3" id="@nameof(ItemDto.Descricao)" @bind-Value="ItemDto.Descricao" />
+    </div>
+    <div class="mb-3">
+        <label for="@nameof(ItemDto.Tipo)" class="form-label">Tipo</label>
+        <InputText class="form-control" id="@nameof(ItemDto.Tipo)" @bind-Value="ItemDto.Tipo" />
+    </div>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="d-grid gap-2 d-md-block">
+        <button type="submit" class="btn btn-primary">Adicionar</button>
+        <button type="button" class="btn btn-primary" @onclick="@Clear">Limpar</button>
+    </div>
+</EditForm>
+<br />
+<br />
+<table class="table">
+    <thead class="table-primary">
+        <tr>
+            <th>Codigo</th>
+            <th>Descrição</th>
+            <th>Tipo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var itemDto in ItensDto)
+        {
+            <tr>
+                <td>@itemDto.Codigo</td>
+                <td>@itemDto.Descricao</td>
+                <td>@itemDto.Tipo</td>
+                <td>
+                    <button type="button" class="btn btn-primary" @onclick="@(e => Edit(itemDto))">Editar</button>
+                    <button type="button" class="btn btn-primary" @onclick="@(e => Remove(itemDto))">Remover</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="d-grid gap-2 d-md-block">
+    <button type="button" class="btn btn-primary" @onclick="@SalvarAsync">Salvar </button>
+    <button type="button" class="btn btn-primary" @onclick="@ClearAll">Limpar</button>
+    <button type="button" class="btn btn-primary" @onclick="@Listar">Listar</button>
+</div>
+<br />
+<br />
+@if (!string.IsNullOrWhiteSpace(MessageErro))
+{
+    <div class="border-1 alert-warning">
+        <p>@MessageErro</p>
+    </div>
+}
+
+@code {
+
+    private string MessageErro { get; set; }
+    private ItemCreateDto ItemDto { get; set; }
+    private List<ItemCreateDto> ItensDto { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ItemDto = new();
+        ItensDto = new();
+        MessageErro = string.Empty;
+    }
+
+    private void Add()
+    {
+        if (!ItensDto.Contains(ItemDto))
+            ItensDto.Add(ItemDto);
+        Clear();
+    }
+
+    private void Edit(ItemCreateDto itemDto)
+    {
+        ItemDto = itemDto;
+    }
+
+    private void Remove(ItemCreateDto itemDto)
+    {
+        ItensDto.Remove(itemDto);
+    }
+
+    private void Clear()
+    {
+        ItemDto = new();
+    }
+
+    private void ClearAll()
+    {
+        Clear();
+        ItensDto = new();
+    }
+
+    private void Listar()
+    {
+        NavigationManager.NavigateTo("itens");
+    }
+
+    private async Task SalvarAsync()
+    {
+        var response = await HttpClient.PostAsJsonAsync<IList<ItemCreateDto>>("item", ItensDto);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("itens");
+        }
+      
+        MessageErro = await response.Content.ReadAsStringAsync();
+
+    }
+}

@@ -1,0 +1,67 @@
+﻿@page "/itens"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+<h3>Itens</h3>
+@if (ItensDto.Any())
+{
+    <table class="table">
+        <thead class="table-primary">
+            <tr>
+                <th>Codigo</th>
+                <th>Descrição</th>
+                <th>Tipo</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var itemDto in ItensDto)
+            {
+                <tr>
+                    <td>@itemDto.Codigo</td>
+                    <td>@itemDto.Descricao</td>
+                    <td>@itemDto.Tipo</td>
+                   @* <td>
+                        <button type="button" class="btn btn-primary" @onclick="@(e => Edit(itemDto))">Editar</button>
+                    </td>*@
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+}
+else
+{
+    <h4>aguarde...</h4>
+}
+<div class="d-grid gap-2 d-md-block">
+    <button type="button" class="btn btn-primary" @onclick="@Adicionar">Adicionar</button>
+</div>
+@if (!string.IsNullOrWhiteSpace(MessageErro))
+{
+    <div class="border-1 alert-warning">
+        <p>@MessageErro</p>
+    </div>
+}
+
+@code {
+
+    private string MessageErro { get; set; }
+
+    private List<ItemReadDto> ItensDto { get; set; } = new();
+
+    protected override async void OnInitialized()
+    {
+        var result = await HttpClient.GetFromJsonAsync<IList<ItemReadDto>>("item");
+        if (result != null)
+        {
+            ItensDto.AddRange(result.ToArray());
+            StateHasChanged();
+        }
+    }
+
+    public void Adicionar()
+    {
+        NavigationManager.NavigateTo("item");
+    }
+
+}
