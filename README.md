@@ -17,9 +17,14 @@ O projeto é desenvolvido utilizando as seguintes tecnologias:
 - **SQLite**: Banco de dados embutido utilizado para armazenar as informações do estoque.
 - **WebAssembly Blazor**: Tecnologia utilizada para criar a interface de usuário do software, permitindo sua execução diretamente no navegador.
 
-## Configuração do Ambiente de Desenvolvimento
+## Contribuição
 
-Para configurar o ambiente de desenvolvimento e executar o software, siga as instruções abaixo:
+Contribuições para a melhoria do software são sempre bem-vindas. Se você encontrar algum problema ou tiver sugestões de melhorias, sinta-se à vontade para abrir uma [issue](https://github.com/seu-usuario/nome-do-repositorio/issues) ou enviar um pull request.
 
-1. Certifique-se de ter o [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0) instalado em sua máquina.
-2. Clone este repositório em sua máquina local.
+## Licença
+
+Este projeto está licenciado sob a [Licença MIT](https://opensource.org/licenses/MIT). Sinta-se livre para utilizar e modificar o software de acordo com os termos da licença.
+
+---
+
+Esperamos que este software de gerenciamento de estoque facilite a organização da festa junina da Igreja e Paróquia São Rafael da Mooca. Se você tiver alguma dúvida ou precisar de suporte, fique à vontade para entrar em contato com nossa equipe. Agradecemos sua contribuição e desejamos uma excelente festa junina!
