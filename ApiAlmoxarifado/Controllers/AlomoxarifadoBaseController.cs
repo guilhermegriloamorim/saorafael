@@ -54,7 +54,21 @@ namespace ApiAlmoxarifado.Controllers
             try
             {
                 var dtoRead = await _service.AddAsync<TDtoRead, TDtoCreate>(dtoCreate);
-                return CreatedAtAction(nameof(GetByIdAsync), new { id = ((dynamic)dtoRead)?.Id }, dtoRead); ;
+                return CreatedAtAction(nameof(GetByIdAsync), new { id = ((dynamic)dtoRead)?.Id }, dtoRead);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpPost("list")]
+        public virtual async Task<IActionResult> PostAsync([FromBody] IList<TDtoCreate> dtoCreate)
+        {
+            try
+            {
+                var dtoRead = await _service.AddRangeAsync<TDtoRead, TDtoCreate>(dtoCreate);
+                return Ok(dtoRead);
             }
             catch (Exception ex)
             {
