@@ -38,9 +38,4 @@ namespace AlmoxarifadoRepositories.Data.Configuration
             builder.HasIndex(p => p.ItemId);
         }
     }
-
-
-
-
-
 }

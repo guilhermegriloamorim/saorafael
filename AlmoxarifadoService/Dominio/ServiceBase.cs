@@ -3,7 +3,8 @@ using AlmoxarifadoService.Interfaces;
 using AutoMapper;
 namespace AlmoxarifadoService.Dominio
 {
-    public abstract class  ServiceBase<TRepository, TEntity> : IServiceBase where TRepository : IRepositoryBase<TEntity> where TEntity : class
+
+    public abstract class ServiceBase<TRepository, TEntity> : IServiceBase where TRepository : IRepositoryBase<TEntity> where TEntity : class
     {
         protected readonly IMapper _mapper;
         protected readonly TRepository _repository;
@@ -32,6 +33,18 @@ namespace AlmoxarifadoService.Dominio
             var entity = _mapper.Map<TEntity>(dto);
             await _repository.AddAsync(entity);
             return _mapper.Map<TDtoRead>(entity);
+        }
+
+        public async Task<IList<TDtoRead>> AddRangeAsync<TDtoRead, TDtoCreate>(IList<TDtoCreate> dtos)
+        {
+            var dtosRead = new List<TDtoRead>();
+            foreach (var dto in dtos)
+            {
+                var entity = _mapper.Map<TEntity>(dto);
+                await _repository.AddAsync(entity);
+                dtosRead.Add(_mapper.Map<TDtoRead>(entity));
+            }
+            return dtosRead;
         }
 
         public virtual async Task<TDto> UpdateAsync<TDto>(Guid id, TDto dto)

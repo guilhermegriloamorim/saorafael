@@ -15,14 +15,14 @@ namespace AlmoxarifadoService.MapperConfiguration
             CreateMap<Item, ItemDtoCreate>().ReverseMap();
             CreateMap<Item, ItemDtoUpdate>().ReverseMap();
             CreateMap<Item, ItemDtoRead>().ReverseMap();
+           
+            CreateMap<ItemEntrada, ItemEntradaDtoCreate>().ReverseMap();
+            CreateMap<ItemEntrada, ItemEntradaDtoUpdate>().ReverseMap();
+            CreateMap<ItemEntrada, ItemEntradaDtoRead>().ReverseMap();
 
             CreateMap<ItemSaida, ItemSaidaDtoCreate>().ReverseMap();
             CreateMap<ItemSaida, ItemSaidaDtoUpdate>().ReverseMap();
             CreateMap<ItemSaida, ItemSaidaDtoRead>().ReverseMap();
-
-            CreateMap<ItemEntrada, ItemEntradaDtoCreate>().ReverseMap();
-            CreateMap<ItemEntrada, ItemEntradaDtoUpdate>().ReverseMap();
-            CreateMap<ItemEntrada, ItemEntradaDtoRead>().ReverseMap();
 
             CreateMap<ItemSaidaViewModel, ItemSaidaViewModel>().ReverseMap();
             CreateMap<UnidadeMedidaViewModel, UnidadeMedidaViewModel>().ReverseMap();

@@ -10,23 +10,29 @@ namespace AlmoxarifadoRepositories.Interfaces
         Task<T> UpdateAsync(T entity);
         Task<bool> DeleteAsync(Guid id);
     }
-
+    //Barraca
     public interface IRepositoryBarrca : IRepositoryBase<Barraca>
     {
     }
+    //Item
     public interface IRepositoryItem : IRepositoryBase<Item>
     {
     }
+    //ItemEntrada
     public interface IRepositoryItemEntrada : IRepositoryBase<ItemEntrada>
     {
     }
+    //ItemSaida
     public interface IRepositoryItemSaida : IRepositoryBase<ItemSaida>
     {
     }
+    //ItemSaidaViewModel
     public interface IRepositoryItemSaidaViewModel : IRepositoryBase<ItemSaidaViewModel>
     {
     }
+    //UnidadeMedidaViewModel
     public interface IRepositoryUnidadeMedidaViewModel : IRepositoryBase<UnidadeMedidaViewModel>
     {
     }
+
 }

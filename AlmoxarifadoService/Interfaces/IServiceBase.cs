@@ -4,47 +4,33 @@
     {
         Task<TDto> GetByIdAsync<TDto>(Guid id);
         Task<IEnumerable<TDto>> GetAllAsync<TDto>();
-        Task<TDtoRead> AddAsync<TDtoRead,TDtoCreate>(TDtoCreate dto);
+        Task<TDtoRead> AddAsync<TDtoRead, TDtoCreate>(TDtoCreate dto);
+        Task<IList<TDtoRead>> AddRangeAsync<TDtoRead, TDtoCreate>(IList<TDtoCreate> dto);
         Task<TDto> UpdateAsync<TDto>(Guid id, TDto dto);
         Task<bool> DeleteAsync(Guid id);
     }
 
-    //BarracaService
+    //Barraca
     public interface IServiceBarraca : IServiceBase
     {
     }
-
-    //ColaboradorService
-    public interface IColaboradorService : IServiceBase
-    {
-    }
-
-    //ItemService
+    //Item
     public interface IServiceItem : IServiceBase
     {
     }
-     
-    //ItemSaidaService
+    //ItemSaida
     public interface IServiceItemSaida : IServiceBase
     {
     }
-
-    //ItemEntradaService
+    //ItemEntrada
     public interface IServiceItemEntrada : IServiceBase
     {
     }
-
-    //ItemSaidaViewModel
+    //ItemSaida
     public interface IServiceItemSaidaViewModel : IServiceBase
     {
     }
-
-    //ItemEntradaViewModel
-    public interface IServiceItemEntradaViewModel : IServiceBase
-    {
-    }
-
-    //UnidadeMedidaService
+    //UnidadeMedidaViewModel
     public interface IServiceUnidadeMedidaViewModel : IServiceBase
     {
     }

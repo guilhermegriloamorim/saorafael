@@ -26,10 +26,8 @@ namespace AlmoxarifadoRepositories.Dominio
         public virtual async Task<TEntity> AddAsync(TEntity entity)
         {
             if (entity == null) return default;
-
             await _dbContex.AddAsync(entity);
             await _dbContex.SaveChangesAsync();
-
             return entity;
         }
 
