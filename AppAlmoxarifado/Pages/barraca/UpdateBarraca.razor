@@ -1,0 +1,99 @@
+﻿@page "/barraca/{Id:int?}"
+@inject HttpClient _httpClient
+@inject NavigationManager _navigationManager
+
+<div class="row alert alert-info mb-3" role="alert">
+    <h1 class="h4">Atualizar Barrca</h1>
+</div>
+
+<div class="d-grid gap-1 d-md-block mb-3">
+    <button type="button" class="btn btn-primary" @onclick="@BtnAdicionar">
+        <span class="oi oi-plus"></span> ADICIONAR
+    </button>
+    <button type="button" class="btn btn-primary" @onclick="@BtnListar">
+        <span class="oi oi-list"></span> LISTAR
+    </button>
+</div>
+
+
+<div class="row">
+    @if (ItemExiste)
+    {
+        <EditForm Model="@dto" OnValidSubmit="@BtnSalvarAsync">
+            <div class="mb-3">
+                <label for="@nameof(dto.Nome)" class="form-label">Nome da Barrca</label>
+                <InputText class="form-control" id="@nameof(dto.Nome)" @bind-Value="dto.Nome" />
+            </div>
+            <div class="mb-3">
+                <label for="@nameof(dto.Descricao)" class="form-label">Descrição</label>
+                <InputTextArea class="form-control" rows="3" id="@nameof(dto.Descricao)" @bind-Value="dto.Descricao" />
+            </div>
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <button type="submit" class="btn btn-success">
+                <span class="oi oi-circle-check"></span> SALVAR
+            </button>
+        </EditForm>  
+    }
+</div>
+
+<LoggerErroComponent MessageErro="@MessageErro" />
+@code {
+
+    private string MessageErro { get; set; } = string.Empty;
+    private BarracaDtoUpdate dto { get; set; } = new();
+
+    [Parameter]
+    public int? Id { get; set; } = null;
+    private bool ItemExiste { get; set; } = false;
+
+    protected override async void OnInitialized()
+    {
+        if (Id.HasValue)
+        {
+            try
+            {
+                var response = await _httpClient.GetFromJsonAsync<BarracaDtoUpdate>($"barraca/{Id}");
+                if (response != null)
+                {
+                    dto = response;
+                    ItemExiste = true;
+                }
+                else
+                {
+                    MessageErro = "Não foi possível obter o barraca";
+                }
+            }
+            catch (Exception e)
+            {
+                MessageErro = "Não foi possível obter o barraca";
+            }
+        }
+        StateHasChanged();
+    }
+
+    private void BtnListar()
+    {
+        _navigationManager.NavigateTo("barracas");
+    }
+
+    private void BtnAdicionar()
+    {
+        _navigationManager.NavigateTo("barraca");
+    }
+
+    private async Task BtnSalvarAsync()
+    {
+        var response = await _httpClient.PutAsJsonAsync<BarracaDtoUpdate>($"barraca/{Id}", dto);
+        if (response.IsSuccessStatusCode)
+        {
+            BtnListar();
+        }
+        else
+        {
+            MessageErro = "Erro ao atualizar a barraca.";
+        }
+        StateHasChanged();
+    }
+
+}

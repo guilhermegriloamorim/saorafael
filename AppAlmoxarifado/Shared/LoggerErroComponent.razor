@@ -1,0 +1,13 @@
+﻿<div class="row mt-3 mb-3">
+    @if (!string.IsNullOrWhiteSpace(MessageErro))
+    {
+        <div class="border-1 alert-warning">
+            <p>@MessageErro</p>
+        </div>
+    }
+</div>
+@code {
+
+    [Parameter]
+    public string MessageErro { get; set; } = string.Empty;
+}

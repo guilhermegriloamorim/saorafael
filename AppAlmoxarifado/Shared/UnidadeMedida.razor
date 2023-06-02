@@ -1,10 +1,10 @@
-﻿@inject HttpClient HttpClient
+﻿@inject HttpClient _httpClient
 
-@if (unidadeMedidaViewModels != null)
+@if (UnidadeMedidaViewModels != null)
 {
-    <input class="form-control form-select-lg mb-3" list="DataListUnidadeMedida" id="DataListUnidade" placeholder="Selecione a unidade de medida "  @onchange="@(e => OnUnidadeChanged(e))" >
+    <input class="form-control form-select-lg mb-3" list="DataListUnidadeMedida" id="DataListUnidade" placeholder="Selecione a unidade de medida " @onchange="@(e => OnUnidadeChanged(e))">
     <datalist id="DataListUnidadeMedida">
-        @foreach (var item in unidadeMedidaViewModels)
+        @foreach (var item in UnidadeMedidaViewModels)
         {
             <option value="@item">@item.DESCRICAO</option>
         }
@@ -13,14 +13,23 @@
 
 @code {
 
-    private string unidade;
-
-    public IList<UnidadeMedidaViewModel> unidadeMedidaViewModels = new List<UnidadeMedidaViewModel>();
+    private const string uri = "unidadeMedida";
+    private string unidade = string.Empty;
+    public List<UnidadeMedidaViewModel> UnidadeMedidaViewModels = new List<UnidadeMedidaViewModel>();
 
     protected override async Task OnInitializedAsync()
     {
-        unidadeMedidaViewModels = await HttpClient.GetFromJsonAsync<IList<UnidadeMedidaViewModel>>("unidadeMedida");
-        StateHasChanged();
+
+        var response = await _httpClient.GetFromJsonAsync<IList<UnidadeMedidaViewModel>>(uri);
+        if (response != null)
+        {
+            UnidadeMedidaViewModels.AddRange(response.ToArray());
+            StateHasChanged();
+        }
+        else
+        {
+            UnidadeMedidaViewModels.Clear();
+        }
     }
 
     [Parameter]

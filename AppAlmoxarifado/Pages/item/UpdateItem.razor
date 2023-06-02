@@ -1,0 +1,102 @@
+﻿@page "/item/{Id:int?}"
+@inject HttpClient _httpClient
+@inject NavigationManager _navigationManager
+
+<div class="row alert alert-info mb-3" role="alert">
+    <h1 class="h4">Atualizar Item</h1>
+</div>
+
+<div class="d-grid gap-1 d-md-block mb-3">
+    <button type="button" class="btn btn-primary" @onclick="@BtnAdicionar">
+        <span class="oi oi-plus"></span> ADICIONAR
+    </button>
+    <button type="button" class="btn btn-primary" @onclick="@BtnListar">
+        <span class="oi oi-list"></span> LISTAR
+    </button>
+</div>
+
+<div class="row">
+    @if (ItemExiste)
+    {
+        <EditForm Model="@dtoUpdate" OnValidSubmit="@BtnSalvarAsync">
+            <div class="mb-3">
+                <label for="@nameof(dtoUpdate.Codigo)" class="form-label">Código</label>
+                <InputText class="form-control" id="@nameof(dtoUpdate.Codigo)" @bind-Value="dtoUpdate.Codigo" />
+            </div>
+            <div class="mb-3">
+                <label for="@nameof(dtoUpdate.Descricao)" class="form-label">Descricão</label>
+                <InputTextArea class="form-control" rows="3" id="@nameof(dtoUpdate.Descricao)" @bind-Value="dtoUpdate.Descricao" />
+            </div>
+            <div class="mb-3">
+                <label for="@nameof(dtoUpdate.Tipo)" class="form-label">Tipo</label>
+                <InputText class="form-control" id="@nameof(dtoUpdate.Tipo)" @bind-Value="dtoUpdate.Tipo" />
+            </div>
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <button type="submit" class="btn btn-success">
+                <span class="oi oi-circle-check"></span> SALVAR
+            </button>
+        </EditForm>
+    }
+</div>
+
+<LoggerErroComponent MessageErro="@MessageErro" />
+@code {
+
+    private string MessageErro { get; set; } = string.Empty;
+    private ItemDtoUpdate dtoUpdate { get; set; } = new();
+
+    [Parameter]
+    public int? Id { get; set; } = null;
+    private bool ItemExiste { get; set; } = false;
+
+    protected override async void OnInitialized()
+    {
+        if (Id.HasValue)
+        {
+            try
+            {
+                var response = await _httpClient.GetFromJsonAsync<ItemDtoUpdate>($"item/{Id}");
+                if (response != null)
+                {
+                    dtoUpdate = response;
+                    ItemExiste = true;
+                }
+                else
+                {
+                    MessageErro = "Não foi possível obter o item";
+                }
+            }
+            catch (Exception e)
+            {
+                MessageErro = "Não foi possível obter o item";
+            }
+        }
+        StateHasChanged();
+    }
+
+    private void BtnListar()
+    {
+        _navigationManager.NavigateTo("itens");
+    }
+
+    private void BtnAdicionar()
+    {
+        _navigationManager.NavigateTo("item");
+    }
+
+    private async Task BtnSalvarAsync()
+    {
+        var response = await _httpClient.PutAsJsonAsync<ItemDtoUpdate>($"item/{Id}", dtoUpdate);
+        if (response.IsSuccessStatusCode)
+        {
+            BtnListar();
+        }
+        else
+        {
+            MessageErro = "Erro ao atualizar o item.";
+        }
+        StateHasChanged();
+    }
+
+}

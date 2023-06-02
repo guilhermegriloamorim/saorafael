@@ -11,8 +11,11 @@ namespace AlmoxarifadoRepositories.Dominio
             _dbContex = dbContex;
         }
 
-        public virtual async Task<TEntity> GetByIdAsync(Guid id)
+        public virtual async Task<TEntity> GetByIdAsync(int? id)
         {
+            if (!id.HasValue)
+                throw new ArgumentNullException(nameof(id));
+
             TEntity entity = await _dbContex.Set<TEntity>().FindAsync(id);
             return entity == null ? null : entity;
         }
@@ -39,8 +42,11 @@ namespace AlmoxarifadoRepositories.Dominio
             return entity;
         }
 
-        public virtual async Task<bool> DeleteAsync(Guid id)
+        public virtual async Task<bool> DeleteAsync(int? id)
         {
+            if(!id.HasValue)
+                throw new ArgumentNullException(nameof(id));
+
             TEntity entity = await _dbContex.Set<TEntity>().FindAsync(id);
             if (entity == null) return false;
             _dbContex.Remove(entity);

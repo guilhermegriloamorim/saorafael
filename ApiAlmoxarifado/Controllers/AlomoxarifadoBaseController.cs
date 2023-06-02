@@ -31,7 +31,7 @@ namespace ApiAlmoxarifado.Controllers
 
         [HttpGet("{id}")]
         [ActionName(nameof(GetByIdAsync))]
-        public virtual async Task<IActionResult> GetByIdAsync(Guid id)
+        public virtual async Task<IActionResult> GetByIdAsync(int? id)
         {
             try
             {
@@ -77,7 +77,7 @@ namespace ApiAlmoxarifado.Controllers
         }
 
         [HttpPut("{id}")]
-        public virtual async Task<IActionResult> PutAsync([FromRoute] Guid id, [FromBody] TDtoUpdate dtoUpdate)
+        public virtual async Task<IActionResult> PutAsync([FromRoute] int? id, [FromBody] TDtoUpdate dtoUpdate)
         {
             try
             {
@@ -91,7 +91,7 @@ namespace ApiAlmoxarifado.Controllers
         }
 
         [HttpDelete("{id}")]
-        public virtual async Task<IActionResult> DeleteAsync(Guid id)
+        public virtual async Task<IActionResult> DeleteAsync(int? id)
         {
             try
             {

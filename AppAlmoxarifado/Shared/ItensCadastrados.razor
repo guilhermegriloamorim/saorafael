@@ -1,5 +1,6 @@
-﻿@inject HttpClient HttpClient
-@inject NavigationManager NavigationManager
+﻿@inject HttpClient _httpClient
+@inject NavigationManager _navigationManager
+
 @if (ItensReadDto.Any())
 {
     <div>
@@ -23,24 +24,34 @@
     public EventCallback<string> TipoDeItemChanged { get; set; }
 
     [Parameter]
-
     public int Descricao { get; set; }
 
-    public ItemDtoRead ItemReadDto { get; set; }
+    public ItemDtoRead ItemDtoRead { get; set; }
     public List<ItemDtoRead> ItensReadDto { get; set; } = new();
+
 
     protected override async void OnInitialized()
     {
-        var result = await HttpClient.GetFromJsonAsync<IList<ItemDtoRead>>("item");
-        if (result != null)
+        try
         {
-            ItensReadDto.AddRange(result.ToArray());
-            StateHasChanged();
+            var result = await _httpClient.GetFromJsonAsync<IList<ItemDtoRead>>("item");
+            if (result != null)
+            {
+                ItensReadDto.AddRange(result.ToArray());
+                StateHasChanged();
+            }
         }
+        catch (Exception e)
+        {
+            
+            throw e;
+        }
+
+      
     }
 
     public void Select(object value)
     {
-        ItemReadDto = ItensReadDto.FirstOrDefault(i => i.Id == (int)value);
+        ItemDtoRead = ItensReadDto.FirstOrDefault(i => i.Id == (int)value);
     }
 }

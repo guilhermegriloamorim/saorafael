@@ -1,67 +1,81 @@
 ﻿@page "/itens"
-@inject HttpClient HttpClient
-@inject NavigationManager NavigationManager
-<h3>Itens</h3>
-@if (ItensDto.Any())
-{
-    <table class="table">
-        <thead class="table-primary">
-            <tr>
-                <th>Codigo</th>
-                <th>Descrição</th>
-                <th>Tipo</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var itemDto in ItensDto)
-            {
-                <tr>
-                    <td>@itemDto.Codigo</td>
-                    <td>@itemDto.Descricao</td>
-                    <td>@itemDto.Tipo</td>
-                   @* <td>
-                        <button type="button" class="btn btn-primary" @onclick="@(e => Edit(itemDto))">Editar</button>
-                    </td>*@
-                </tr>
-            }
-        </tbody>
-    </table>
-    <br />
-}
-else
-{
-    <h4>aguarde...</h4>
-}
-<div class="d-grid gap-2 d-md-block">
-    <button type="button" class="btn btn-primary" @onclick="@Adicionar">Adicionar</button>
+@inject HttpClient _httpClient
+@inject NavigationManager _navigationManager
+
+<div class="row alert alert-info mb-3" role="alert">
+    <h1 class="h4">Cadastro de Itens</h1>
 </div>
-@if (!string.IsNullOrWhiteSpace(MessageErro))
-{
-    <div class="border-1 alert-warning">
-        <p>@MessageErro</p>
-    </div>
-}
+
+<div class="d-grid gap-1 d-md-block mb-3">
+    <button type="button" class="btn btn-primary" @onclick="@BtnAdicionar">
+        <span class="oi oi-plus"></span> ADICIONAR
+    </button>
+</div>
+
+<div class="row mb-3">
+    @if (dtosRead.Any())
+    {
+        <table class="table table-hover table-responsive mb-3">
+            <thead class="table-secondary">
+                <tr>
+                    <th>Código</th>
+                    <th>Descrição</th>
+                    <th>Observação</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var dto in dtosRead)
+                {
+                    <tr>
+                        <td>@dto.Id</td>
+                        <td>@dto.Codigo @dto.Descricao</td>
+                        <td>@dto.Tipo</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" @onclick="@(e => BtnEdit(dto))">
+                                <span class="oi oi-pencil"></span>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h4>aguarde...</h4>
+    }
+</div>
+
+<LoggerErroComponent MessageErro="@MessageErro" />
 
 @code {
 
-    private string MessageErro { get; set; }
-
-    private List<ItemDtoRead> ItensDto { get; set; } = new();
+    private string MessageErro { get; set; } = string.Empty;
+    private List<ItemDtoRead> dtosRead { get; set; } = new();
 
     protected override async void OnInitialized()
     {
-        var result = await HttpClient.GetFromJsonAsync<IList<ItemDtoRead>>("item");
-        if (result != null)
+        var response = await _httpClient.GetFromJsonAsync<IList<ItemDtoRead>>("item");
+        if (response != null)
         {
-            ItensDto.AddRange(result.ToArray());
-            StateHasChanged();
+            dtosRead.AddRange(response.ToArray());
         }
+        else
+        {
+            MessageErro = "Não foi possível obter os itens";
+        }
+        StateHasChanged();
     }
 
-    public void Adicionar()
+    public void BtnAdicionar()
     {
-        NavigationManager.NavigateTo("item");
+        _navigationManager.NavigateTo("item");
+    }
+
+    public void BtnEdit(ItemDtoRead dto)
+    {
+        _navigationManager.NavigateTo($"item/{dto.Id}");
     }
 
 }

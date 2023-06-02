@@ -1,0 +1,174 @@
+﻿@page "/entrada"
+@inject HttpClient _httpClient
+@inject NavigationManager _navigationManager
+@inject IJSRuntime js
+
+<h4>Registrar Entrada de Estoque</h4>
+
+@if (formOnLoad)
+{
+    <EditForm Model="@dtoCreate" OnValidSubmit="@BtnAdicionar">
+        <div class="mb-3">
+            @if (dtosRead.Any())
+            {
+                <input class="form-control form-select-lg mb-3" onfocus="this.value=''" list="DataListItemOptions" id="DataListItem" placeholder="Selecione um Item..." @onchange="@((@args) => SelectItem(args.Value))">
+                <datalist id="DataListItemOptions">
+                    @foreach (ItemDtoRead item in dtosRead)
+                    {
+                        <option value="@item.ToString()">@item.ToString()</option>
+                    }
+                </datalist>
+            }
+        </div>
+
+        <div class="mb-3" style="display:none">
+            <label for="@nameof(dtoCreate.NomeCompleto)" class="form-label">Produto</label>
+            <InputText class="form-control" id="@nameof(dtoCreate.NomeCompleto)" @bind-Value="dtoCreate.NomeCompleto" />
+        </div>
+        <div class="mb-3">
+            <label for="@nameof(dtoCreate.DtEntrada)" class="form-label">Data</label>
+            <InputDate class="form-control" id="@nameof(dtoCreate.DtEntrada)" @bind-Value="dtoCreate.DtEntrada" />
+        </div>
+        <div class="mb-3">
+            <label for="@nameof(dtoCreate.Unidade)" class="form-label">Unidade de Medida</label>
+            <InputText class="form-control" id="@nameof(dtoCreate.Unidade)" @bind-Value="dtoCreate.Unidade" />
+        </div>
+        <div class="mb-3">
+            <label for="@nameof(dtoCreate.Quantidade)" class="form-label">Quantidade</label>
+            <InputNumber class="form-control" id="@nameof(dtoCreate.Quantidade)" @bind-Value="dtoCreate.Quantidade" />
+        </div>
+        <div class="mb-3">
+            <label for="@nameof(dtoCreate.Observacao)" class="form-label">Descricão</label>
+            <InputTextArea class="form-control" rows="3" id="@nameof(dtoCreate.Observacao)" @bind-Value="dtoCreate.Observacao" />
+        </div>
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="d-grid gap-2 d-md-block">
+            <button type="submit" class="btn btn-primary">Adicionar</button>
+            <button type="button" class="btn btn-primary" @onclick="@BtnClear">Limpar</button>
+        </div>
+
+    </EditForm>
+    
+    <table class="table table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Data Entrada</th>
+                <th>Item</th>
+                <th>Unidade</th>
+                <th>Quantidade</th>
+                <th>Obs.</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var itemDto in dtosCreate)
+            {
+                <tr>
+                    <td>@itemDto.DtEntrada</td>
+                    <td>@itemDto.NomeCompleto</td>
+                    <td>@itemDto.Unidade</td>
+                    <td>@itemDto.Quantidade</td>
+                    <td>@itemDto.Observacao</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" @onclick="@(e => BtnRemove(itemDto))">Remover</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+ 
+    <div class="d-grid gap-2 d-md-block">
+        <button type="button" class="btn btn-primary" @onclick="@BtnSalvarAsync">Salvar </button>
+    </div>
+ 
+
+}
+else
+{
+    <h4 class="h4">aguarde...</h4>
+}
+
+
+@code {
+
+    private bool formOnLoad = false;
+    private string displayNone = string.Empty;
+    private string MessageErro { get; set; } = string.Empty;
+
+    public ItemDtoRead dtoRead { get; set; } = new();
+    public List<ItemDtoRead> dtosRead { get; set; } = new();
+
+    public ItemEntradaDtoCreate dtoCreate { get; set; } = new() { DtEntrada = DateTime.Now, Unidade = "UND", Quantidade = 1 };
+    public List<ItemEntradaDtoCreate> dtosCreate { get; set; } = new();
+
+
+    protected override async void OnInitialized()
+    {
+        formOnLoad = false;
+        var itensReadDtos = await _httpClient.GetFromJsonAsync<IList<ItemDtoRead>>("item");
+
+        if (itensReadDtos.Any())
+            dtosRead.AddRange(itensReadDtos.ToArray());
+
+        formOnLoad = true;
+        StateHasChanged();
+    }
+
+    private void SelectItem(object value)
+    {
+        if (string.IsNullOrWhiteSpace(value.ToString()))
+            return;
+
+        var id = int.Parse(value.ToString().Split(" ")[0].ToString());
+        dtoRead = dtosRead.FirstOrDefault(i => i.Id == id);
+        dtoCreate.ItemId = dtoRead.Id;
+        dtoCreate.NomeCompleto = dtoRead.ToString();
+    }
+
+    private void BtnAdicionar()
+    {
+        if (!dtosCreate.Contains(dtoCreate))
+            dtosCreate.Add(dtoCreate);
+
+        BtnClear();
+    }
+
+    private void BtnRemove(ItemEntradaDtoCreate itemDto)
+    {
+        dtosCreate.Remove(itemDto);
+    }
+
+    private void BtnClear()
+    {
+        dtoRead = new();
+        dtoCreate = new() { DtEntrada = DateTime.Now, Unidade = "UND", Quantidade = 1 };
+        OnFocus("DataListItem").Wait();
+    }
+
+    private void BtnClearAll()
+    {
+        dtosCreate = new();
+        BtnClear();
+    }
+
+    private async Task OnFocus(string elementId)
+    {
+        await js.InvokeVoidAsync("focusById", elementId);
+    }
+    
+    private async Task BtnSalvarAsync()
+    {
+        var response = await _httpClient.PostAsJsonAsync<IList<ItemEntradaDtoCreate>>("itemEntrada", dtosCreate);
+        if (response.IsSuccessStatusCode)
+        {
+            _navigationManager.NavigateTo("home");
+        }
+        else
+        {
+            MessageErro = "Erro ao salvar os dados.";
+        }
+        StateHasChanged();
+    }
+}

@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Almoxarifado", "Almoxarifad
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmoxarifadoRepositories", "AlmoxarifadoRepositories\AlmoxarifadoRepositories.csproj", "{ED52BEDE-4520-45D3-8521-49175A274D9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlmoxarifadoService", "AlmoxarifadoService\AlmoxarifadoService.csproj", "{AEFEF4B1-E296-4E96-BD96-CE6C656525BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlmoxarifadoService", "AlmoxarifadoService\AlmoxarifadoService.csproj", "{AEFEF4B1-E296-4E96-BD96-CE6C656525BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

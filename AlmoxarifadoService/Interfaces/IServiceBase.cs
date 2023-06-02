@@ -2,12 +2,12 @@
 {
     public interface IServiceBase
     {
-        Task<TDto> GetByIdAsync<TDto>(Guid id);
+        Task<TDto> GetByIdAsync<TDto>(int? id);
         Task<IEnumerable<TDto>> GetAllAsync<TDto>();
         Task<TDtoRead> AddAsync<TDtoRead, TDtoCreate>(TDtoCreate dto);
         Task<IList<TDtoRead>> AddRangeAsync<TDtoRead, TDtoCreate>(IList<TDtoCreate> dto);
-        Task<TDto> UpdateAsync<TDto>(Guid id, TDto dto);
-        Task<bool> DeleteAsync(Guid id);
+        Task<TDto> UpdateAsync<TDto>(int? id, TDto dto);
+        Task<bool> DeleteAsync(int? id);
     }
 
     //Barraca

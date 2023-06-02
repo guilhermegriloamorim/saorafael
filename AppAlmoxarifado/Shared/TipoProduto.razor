@@ -7,7 +7,7 @@
 </select>
 @code {
 
-    private IList<string> _tipo;
+    private List<string> _tipo = new();
 
     [Parameter]
     public string? TipoDeItem { get; set; }
@@ -15,10 +15,10 @@
     [Parameter]
     public EventCallback<string> TipoDeItemChanged { get; set; }
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         _tipo = new List<string>() { "Produto", "Embalgem", "Limpeza" };
-        return base.OnInitializedAsync();
+        await base.OnInitializedAsync();
     }
 
     public async Task OnTipoDeItemChanged(ChangeEventArgs e)

@@ -15,7 +15,7 @@ namespace AlmoxarifadoService.Dominio
             _mapper = mapper;
         }
 
-        public virtual async Task<TDto> GetByIdAsync<TDto>(Guid id)
+        public virtual async Task<TDto> GetByIdAsync<TDto>(int? id)
         {
             var entity = await _repository.GetByIdAsync(id);
             if (entity == null) return default;
@@ -47,7 +47,7 @@ namespace AlmoxarifadoService.Dominio
             return dtosRead;
         }
 
-        public virtual async Task<TDto> UpdateAsync<TDto>(Guid id, TDto dto)
+        public virtual async Task<TDto> UpdateAsync<TDto>(int? id, TDto dto)
         {
             var entity = await _repository.GetByIdAsync(id);
             if (entity == null) return default;
@@ -56,7 +56,7 @@ namespace AlmoxarifadoService.Dominio
             return _mapper.Map<TDto>(entity);
         }
 
-        public virtual async Task<bool> DeleteAsync(Guid id)
+        public virtual async Task<bool> DeleteAsync(int? id)
         {
             var entity = await _repository.GetByIdAsync(id);
             if (entity == null) return default;

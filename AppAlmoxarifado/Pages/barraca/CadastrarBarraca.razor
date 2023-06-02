@@ -1,0 +1,72 @@
+﻿@page "/barraca"
+@inject HttpClient _httpClient
+@inject NavigationManager _navigationManager
+
+<div class="row alert alert-info mb-3" role="alert">
+    <h1 class="h4">Cadastrar Barraca</h1>
+</div>
+
+<div class="d-grid gap-1 d-md-block mb-3">
+    <button type="button" class="btn btn-primary" @onclick="@BtnListar">
+        <span class="oi oi-list"></span> LISTAR
+    </button>
+</div>
+
+<div class="row mb-3">
+    <EditForm Model="@dtoCreate" OnValidSubmit="@BtnSalvarAsync">
+        <div class="mb-3">
+            <label for="@nameof(dtoCreate.Nome)" class="form-label">Nome da Barrca</label>
+            <InputText class="form-control" id="@nameof(dtoCreate.Nome)" @bind-Value="dtoCreate.Nome" />
+        </div>
+        <div class="mb-3">
+            <label for="@nameof(dtoCreate.Descricao)" class="form-label">Descrição</label>
+            <InputTextArea class="form-control" rows="3" id="@nameof(dtoCreate.Descricao)" @bind-Value="dtoCreate.Descricao" />
+        </div>
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="d-grid gap-2 d-md-block mb-3">
+            <button type="submit" class="btn btn-success mb-3">
+                <span class="oi oi-circle-check"></span> SALVAR
+            </button>
+            <button type="button" class="btn btn-danger mb-3" @onclick="@BtnClear">
+                <span class="oi oi-ban"></span> LIMPAR
+            </button>
+            <button type="button" class="btn btn-primary mb-3" @onclick="@BtnListar">
+                <span class="oi oi-list"></span> LISTAR
+            </button>
+        </div>
+    </EditForm>
+</div>
+
+<LoggerErroComponent MessageErro="@MessageErro" />
+
+@code {
+
+    private string MessageErro { get; set; } = string.Empty;
+    private BarracaDtoCreate dtoCreate { get; set; } = new();
+
+    private void BtnListar()
+    {
+        _navigationManager.NavigateTo("barracas");
+    }
+
+    private void BtnClear()
+    {
+        dtoCreate = new();
+        StateHasChanged();
+    }
+
+    private async Task BtnSalvarAsync()
+    {
+        var response = await _httpClient.PostAsJsonAsync<BarracaDtoCreate>("barraca", dtoCreate);
+        if (response.IsSuccessStatusCode)
+        {
+            BtnListar();
+        }
+        else
+        {
+            MessageErro = "Erro ao salvar barraca.";
+        }
+        StateHasChanged();
+    }
+}
