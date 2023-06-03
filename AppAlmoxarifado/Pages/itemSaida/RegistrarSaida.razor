@@ -3,124 +3,140 @@
 @inject NavigationManager _navigationManager
 @inject IJSRuntime js
 
-<h4>Registrar Pedido</h4>
-@if (!string.IsNullOrEmpty(BarracaDtoRead.Nome))
-{
-    <h6>@BarracaDtoRead.Nome <span class="oi oi-home" /></h6>
-}
+<div class="row alert alert-info mb-3" role="alert">
+    <p class="h4 mb-3"><span class="oi oi-cart" /> Registrar Pedido</p>
 
-@if (formOnLoad)
-{
-    <EditForm Model="@ItemSaidaDtoCreate" OnValidSubmit="@BtnAdicionar">
-        <div class="mb-3" style="display:@displayNone">
-            @if (BarracasDtoRead.Any())
-            {
+    @if (!string.IsNullOrEmpty(BarracaDtoRead.Nome))
+    {
+        <p class="h6 mb-1">
+            @BarracaDtoRead.Nome
+        </p>
+    }
+</div>
+
+<div class="row mb-3">
+    @if (formOnLoad)
+    {
+        <EditForm Model="@ItemSaidaDtoCreate" OnValidSubmit="@BtnAdicionar">
+            <div class="mb-3" style="display:@displayNone">
                 <input class="form-control form-select-lg mb-3" list="DataListBarracaOptions" id="DataListBarrca" placeholder="Selecione uma Barraca..." @onchange="@((args) => SelectBarraca(args.Value))">
                 <datalist id="DataListBarracaOptions">
-                    @foreach (BarracaDtoRead barraca in BarracasDtoRead)
+                    @foreach (var dto in BarracasDtoRead)
                     {
-                        <option value="@barraca.ToString()">@barraca.ToString()</option>
+                        <option value="@dto.ToString()">@dto.ToString()</option>
                     }
                 </datalist>
+            </div>
+
+            @if (displayNone == "none")
+            {
+                <div class="mb-3">
+                    @if (ItensDtoRead.Any())
+                    {
+                        <input class="form-control form-select-lg mb-3" list="DataListItemOptions" id="DataListItem" placeholder="Selecione um Item..." @onchange="@((@args) => SelectItem(args.Value))">
+                        <datalist id="DataListItemOptions">
+                            @foreach (var dto in ItensDtoRead)
+                            {
+                                <option value="@dto.ToString()">@dto.ToString()</option>
+                            }
+                        </datalist>
+                    }
+                </div>
+
+                <div class="mb-3" style="display:none">
+                    <label for="@nameof(ItemSaidaDtoCreate.NomeCompleto)" class="form-label">Produto</label>
+                    <InputText class="form-control" id="@nameof(ItemSaidaDtoCreate.NomeCompleto)" @bind-Value="ItemSaidaDtoCreate.NomeCompleto" />
+                </div>
+
+                <div class="mb-3">
+                    <UnidadeMedida @bind-Unidade="ItemSaidaDtoCreate.Unidade" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="@nameof(ItemSaidaDtoCreate.Quantidade)" class="form-label">Quantidade</label>
+                    <InputNumber class="form-control" id="@nameof(ItemSaidaDtoCreate.Quantidade)" @bind-Value="ItemSaidaDtoCreate.Quantidade" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="@nameof(ItemSaidaDtoCreate.Observacao)" class="form-label">Descricão</label>
+                    <InputTextArea class="form-control" rows="3" id="@nameof(ItemSaidaDtoCreate.Observacao)" @bind-Value="ItemSaidaDtoCreate.Observacao" />
+                </div>
+
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="d-grid gap-2 d-md-block mb-3">
+                    <button type="submit" class="btn btn-success mb-3">
+                        <span class="oi oi-circle-check"></span>
+                    </button>
+                    <button type="button" class="btn btn-danger mb-3" @onclick="@BtnClear">
+                        <span class="oi oi-ban"></span>
+                    </button>
+                </div>
+
             }
-        </div>
-        @if (displayNone == "none")
+        </EditForm>
+        @if (ItensSaidaDtoCreate.Any())
         {
-            <div class="mb-3">
-                @if (ItensDtoRead.Any())
-                {
-                    <input class="form-control form-select-lg mb-3" onfocus="this.value=''" list="DataListItemOptions" id="DataListItem" placeholder="Selecione um Item..." @onchange="@((@args) => SelectItem(args.Value))">
-                    <datalist id="DataListItemOptions">
-                        @foreach (ItemDtoRead item in ItensDtoRead)
-                        {
-                            <option value="@item.ToString()">@item.ToString()</option>
-                        }
-                    </datalist>
-                }
+            <div class="alert alert-info d-flex align-items-center mb-3" role="alert">
+                <p class="h6  mb-1">
+                    <span class="oi oi-comment-square" /> <strong>Itens do Pedido</strong>  Atenção: Click em Salvar, para concluir a operação!
+                </p>
+
             </div>
 
-            <div class="mb-3" style="display:none">
-                <label for="@nameof(ItemSaidaDtoCreate.NomeCompleto)" class="form-label">Produto</label>
-                <InputText class="form-control" id="@nameof(ItemSaidaDtoCreate.NomeCompleto)" @bind-Value="ItemSaidaDtoCreate.NomeCompleto" />
-            </div>
-
-            <div class="mb-3">
-                <UnidadeMedida @bind-Unidade="ItemSaidaDtoCreate.Unidade" />
-            </div>
-
-            <div class="mb-3">
-                <label for="@nameof(ItemSaidaDtoCreate.Quantidade)" class="form-label">Quantidade</label>
-                <InputNumber class="form-control" id="@nameof(ItemSaidaDtoCreate.Quantidade)" @bind-Value="ItemSaidaDtoCreate.Quantidade" />
-            </div>
-
-            <div class="mb-3">
-                <label for="@nameof(ItemSaidaDtoCreate.Observacao)" class="form-label">Descricão</label>
-                <InputTextArea class="form-control" rows="3" id="@nameof(ItemSaidaDtoCreate.Observacao)" @bind-Value="ItemSaidaDtoCreate.Observacao" />
-            </div>
-
-            <DataAnnotationsValidator />
-            <ValidationSummary />
-
-            <div class="d-grid gap-2 d-md-block mt-3">
-                <button type="button" class="btn btn-primary">
-                    <span class="oi oi-plus"></span> ADICIONAR
-                </button>
-                <button type="button" class="btn btn-primary" @onclick="@BtnClear">
-                    <span class="oi oi-trash"></span> LIMPAR
-                </button>
-            </div>
-
-        }
-    </EditForm>
-
-
-    @if (ItensSaidaDtoCreate.Any())
-    {
-
-        <div class="row mt-5 mb-2">
-            <h4>Itens do Pedido</h4>
-        </div>
-
-        <div class="row">
             <table class="table table-hover">
-                <thead class="table-dark">
+                <thead class="table-secondary">
                     <tr>
                         <th>Item</th>
                         <th>Unidade</th>
                         <th>Quantidade</th>
                         <th>Obs.</th>
-                        <th>#</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var ItensSaidaCreateDto in ItensSaidaDtoCreate)
+                    @foreach (var dto in ItensSaidaDtoCreate)
                     {
                         <tr>
-                            <td>@ItensSaidaCreateDto.NomeCompleto</td>
-                            <td>@ItensSaidaCreateDto.Unidade</td>
-                            <td>@ItensSaidaCreateDto.Quantidade</td>
-                            <td>@ItensSaidaCreateDto.Observacao</td>
+                            <td>@dto.NomeCompleto</td>
+                            <td>@dto.Unidade</td>
+                            <td>@dto.Quantidade</td>
+                            <td>@dto.Observacao</td>
                             <td>
-                                <button type="button" class="btn btn-primary" @onclick="@(e => BtnRemove(ItensSaidaCreateDto))">
-                                    <span class="oi-trash" /> Remover
+                                @* <button type="button" class="btn btn-primary" @onclick="@(e => BtnEditar(dto))">
+                    <span class="oi oi-pencil"></span>
+                    </button>*@
+                                <button type="button" class="btn btn-danger" @onclick="@(e => BtnRemove(dto))">
+                                    <span class="oi oi-trash" />
                                 </button>
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
-        </div>
 
-        <div class="d-grid gap-2 d-md-block">
-            <button type="button" class="btn btn-primary" @onclick="@BtnSalvarAsync">Salvar</button>
-        </div>
 
+        }
     }
-}
-else
-{
-    <h4>aguarde...</h4>
-}
+    else
+    {
+        <h4>aguarde...</h4>
+    }
+</div>
+
+
+<div class="d-grid gap-2 d-md-block mb-3">
+    @if (ItensSaidaDtoCreate.Any())
+    {
+        <button type="submit" class="btn btn-primary mb-3" @onclick="@BtnSalvarAsync">
+            <span class="oi oi-circle-check"></span> SALVAR
+        </button>
+    }
+    <button type="button" class="btn btn-danger mb-3" @onclick="@BtnCancelar">
+        <span class="oi oi-account-logout"></span> SAIR
+    </button>
+</div>
 
 <LoggerErroComponent MessageErro="@MessageErro" />
 
@@ -146,7 +162,6 @@ else
         var barracasDtoRead = await _httpClient.GetFromJsonAsync<IList<BarracaDtoRead>>("barraca");
         if (barracasDtoRead.Any())
             BarracasDtoRead.AddRange(barracasDtoRead.ToArray());
-
 
         var itensDtoRead = await _httpClient.GetFromJsonAsync<IList<ItemDtoRead>>("item");
         if (itensDtoRead.Any())
@@ -177,6 +192,7 @@ else
         var id = int.Parse(value.ToString().Split(" ")[0].ToString());
         BarracaDtoRead = BarracasDtoRead.FirstOrDefault(i => i.Id == id);
         ItemSaidaDtoCreate.BarracaId = BarracaDtoRead.Id;
+
         displayNone = "none";
     }
 
@@ -204,6 +220,17 @@ else
     private void BtnRemove(ItemSaidaDtoCreate dto)
     {
         ItensSaidaDtoCreate.Remove(dto);
+    }
+
+    private void BtnEditar(ItemSaidaDtoCreate dto)
+    {
+        ItemSaidaDtoCreate = dto;
+        StateHasChanged();
+    }
+
+    private void BtnCancelar()
+    {
+        _navigationManager.NavigateTo("home");
     }
 
     private async Task BtnSalvarAsync()

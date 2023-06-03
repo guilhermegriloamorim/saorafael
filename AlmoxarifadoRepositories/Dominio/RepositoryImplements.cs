@@ -2,6 +2,11 @@
 using Almoxarifado.Dominio.ViewModel;
 using AlmoxarifadoRepositories.Data;
 using AlmoxarifadoRepositories.Dominio;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using System.Collections;
+using System.Globalization;
+
 namespace AlmoxarifadoRepositories.Interfaces
 {
     //Barrca
@@ -37,6 +42,22 @@ namespace AlmoxarifadoRepositories.Interfaces
     {
         public RepositoryItemSaidaViewModel(AlmoxarifadoDbContext dbContex) : base(dbContex)
         {
+        }
+
+        public async Task<IList<ItemSaidaViewModel>> GetFillterAsync(string barraca, string? data)
+        {
+            var query = _dbContex.ItemSaidaViewModel.AsQueryable();
+
+            if (barraca != "Todos")
+                query = query.Where(x => x.NOME_BARRCA == barraca).AsQueryable();
+
+            if (!string.IsNullOrEmpty(data))
+            {
+                DateTime dataConvertida = DateTime.ParseExact(data, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                query = query.Where(x => x.DT_SAIDA.Value.Date == dataConvertida.Date.Date).AsQueryable();
+            }
+
+            return await query.ToListAsync();
         }
     }
     //UnidadeMedidaViewModel

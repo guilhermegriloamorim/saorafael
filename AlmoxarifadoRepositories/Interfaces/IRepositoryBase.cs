@@ -29,6 +29,7 @@ namespace AlmoxarifadoRepositories.Interfaces
     //ItemSaidaViewModel
     public interface IRepositoryItemSaidaViewModel : IRepositoryBase<ItemSaidaViewModel>
     {
+        Task<IList<ItemSaidaViewModel>> GetFillterAsync(string barraca, string? data);
     }
     //UnidadeMedidaViewModel
     public interface IRepositoryUnidadeMedidaViewModel : IRepositoryBase<UnidadeMedidaViewModel>

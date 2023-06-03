@@ -13,6 +13,7 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <PackageReference Include="BlazorStrap" Version="5.1.102.51923" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.16" />
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">

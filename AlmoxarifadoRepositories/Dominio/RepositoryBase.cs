@@ -4,7 +4,7 @@ namespace AlmoxarifadoRepositories.Dominio
 {
     public abstract class RepositoryBase<TEntity, TContext> : IRepositoryBase<TEntity> where TEntity : class where TContext : DbContext
     {
-        private readonly TContext _dbContex;
+        protected readonly TContext _dbContex;
 
         public RepositoryBase(TContext dbContex)
         {

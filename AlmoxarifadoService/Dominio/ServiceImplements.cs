@@ -3,6 +3,7 @@ using Almoxarifado.Dominio.ViewModel;
 using AlmoxarifadoRepositories.Interfaces;
 using AlmoxarifadoService.Interfaces;
 using AutoMapper;
+
 namespace AlmoxarifadoService.Dominio
 {
     //Barrca
@@ -38,6 +39,11 @@ namespace AlmoxarifadoService.Dominio
     {
         public ServiceItemSaidaViewModel(IRepositoryItemSaidaViewModel repository, IMapper mapper) : base(repository, mapper)
         {
+        }
+
+        public async Task<IList<ItemSaidaViewModel>> GetFillterAsync(string? barraca, string? data)
+        {
+            return await _repository.GetFillterAsync(barraca, data);
         }
     }
     //UnidadeMedidaViewModel

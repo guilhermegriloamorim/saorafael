@@ -1,54 +1,72 @@
 ﻿@page "/"
 @page "/home"
 @inject HttpClient _httpClient
+@inject NavigationManager _navigationManager
 
+<div class="row alert alert-secondary mb-3" role="alert">
+    <div class="h4 col-8">Almoxarifado</div>
+    <div class="h4 col-4">@DiaDaFesta.ToLongDateString()</div>
+</div>
 @if (OnFomrLoad)
 {
-
-    <h4 class="h4">Itens de Saida</h4>
-    <div class="row">
-
-        @if (BarracasDtoRead.Any())
-        {
-            <input class="form-control form-select-lg mb-3 mt-3" list="DataListBarracaOptions" id="DataListBarrca" placeholder="Selecione uma Barraca..." @onchange="@((args) => SelectBarraca(args.Value))">
-            <datalist id="DataListBarracaOptions">
-                <option value="Todos">Todos</option>
-                @foreach (BarracaDtoRead barraca in BarracasDtoRead)
-                {
-                    <option value="@barraca.Nome">@barraca.Nome</option>
-                }
-            </datalist>
-        }
+    <div class="row mb-3">
+        <div class="col-9">
+            @if (BarracasDtoRead.Any())
+            {
+                <input class="form-control form-select-lg mb-3" list="DataListBarracaOptions" id="DataListBarrca" placeholder="Selecione uma Barraca..." @onchange="@((args) => SelectBarraca(args.Value))">
+                <datalist id="DataListBarracaOptions">
+                    <option value="Todos">Todos</option>
+                    @foreach (BarracaDtoRead barracaDto in BarracasDtoRead)
+                    {
+                        <option value="@barracaDto.Nome">@barracaDto.Nome</option>
+                    }
+                </datalist>
+            }
+        </div>
+        <div class="col-2">
+            <input class="form-control form-control-lg mb-3" type="date" @bind-value="_dtPesquisaBarraca" />
+        </div>
+        <div class="col-1">
+            <button type="button" class="btn btn-primary btn-lg mb-3" @onclick="BtnPesquisarAsync">
+                <span class="oi oi-loop-circular"></span>
+            </button>
+        </div>
     </div>
-
-    <div class="row mt-5">
-        <table class="table table-hover">
-            <thead class="table-dark">
+    <div class="row mb-3">
+        <table class="table table-hover mb-3">
+            <thead class="table-secondary">
                 <tr>
-                    <th>NOME_BARRCA</th>
-                    <th>DT_SAIDA</th>
-                    <th>COD_ITEM</th>
-                    <th>DESCR_ITEM</th>
-                    <th>UNIDADE</th>
-                    <th>QUANTIDADE</th>
+                    <th>Barraca</th>
+                    <th>Data Saída</th>
+                    <th>Item</th>
+                    <th>Unidade</th>
+                    <th>Quantidade</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in ItensSaidaViewModel)
+                @foreach (var dto in ItensSaidaViewModel)
                 {
                     <tr>
-                        <td>@item.NOME_BARRCA</td>
-                        <td>@item.DT_SAIDA</td>
-                        <td>@item.COD_ITEM</td>
-                        <td>@item.DESCR_ITEM</td>
-                        <td>@item.UNIDADE</td>
-                        <td>@item.QTD</td>
+                        <td>@dto.NOME_BARRCA</td>
+                        <td>@dto.DT_SAIDA</td>
+                        <td>@dto.COD_ITEM @dto.DESCR_ITEM</td>
+                        <td>@dto.UNIDADE</td>
+                        <td>@dto.QTD</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" @onclick="@(e => BtnEdit(dto))">
+                                <span class="oi oi-pencil"></span>
+                            </button>
+                            <button type="button" class="btn btn-danger" @onclick="@(e => BtnRemove(dto))">
+                                <span class="oi oi-circle-x"></span>
+                            </button>
+                        </td>
+                     
                     </tr>
                 }
             </tbody>
         </table>
     </div>
-
 }
 else
 {
@@ -57,45 +75,81 @@ else
 
 <LoggerErroComponent MessageErro="@MessageErro" />
 
-
 @code
 {
 
     private bool OnFomrLoad = false;
+    private string MessageErro { get; set; } = string.Empty;
+
+    private string _selectBarraca = string.Empty;
+    private DateTime? _dtPesquisaBarraca = null;
+    private DateTime DiaDaFesta = @DateTime.Now;
+
     private BarracaDtoRead BarracaDtoRead { get; set; } = new();
     private List<BarracaDtoRead> BarracasDtoRead { get; set; } = new();
-    private List<ItemSaidaViewModel> _itensSaidaViewModel { get; set; } = new();
     private List<ItemSaidaViewModel> ItensSaidaViewModel { get; set; } = new();
-    private string MessageErro { get; set; } = string.Empty;
+
 
     protected override async void OnInitialized()
     {
-        OnFomrLoad = false;
-
-        var barracasDtoRead = await _httpClient.GetFromJsonAsync<IList<BarracaDtoRead>>("barraca");
-        if (barracasDtoRead.Any())
-            BarracasDtoRead.AddRange(barracasDtoRead.ToArray());
-        else
-            MessageErro = "Não foi possível carregar as barracas";
-
-        var itensSaidaViewModel = await _httpClient.GetFromJsonAsync<IList<ItemSaidaViewModel>>("itemSaidaViewModel");
-        if (itensSaidaViewModel.Any())
-            _itensSaidaViewModel.AddRange(itensSaidaViewModel.ToArray());
-        else
-            MessageErro = "Não foi possível carregar os itens de saida";
-
-        OnFomrLoad = true;
+        try
+        {
+            var barracasDtoRead = await _httpClient.GetFromJsonAsync<IList<BarracaDtoRead>>("barraca");
+            if (barracasDtoRead.Any())
+                BarracasDtoRead.AddRange(barracasDtoRead.ToArray());
+            else
+                throw new Exception("Não foi possível carregar as barracas");
+            OnFomrLoad = true;
+        }
+        catch (Exception e)
+        {
+            MessageErro = e.Message;
+        }
 
         StateHasChanged();
     }
 
+    public async void BtnPesquisarAsync()
+    {
+        MessageErro = string.Empty;
+        ItensSaidaViewModel.Clear();
+
+        var uri = $"itemSaidaViewModel/filtter";
+        if (_selectBarraca == string.Empty)
+            _selectBarraca = "Todos";
+
+        uri = $"{uri}/{_selectBarraca}";
+
+        if (_dtPesquisaBarraca.HasValue)
+            uri = $"{uri}/{_dtPesquisaBarraca:yyyy-MM-dd}";
+
+        var response = await _httpClient.GetFromJsonAsync<IList<ItemSaidaViewModel>>(uri);
+        if (response.Any())
+            ItensSaidaViewModel.AddRange(response.ToArray());
+        else
+            MessageErro = "Não foi possível carregar os itens de saida";
+
+        StateHasChanged();
+    }
 
     public void SelectBarraca(object value)
     {
-        if (value.ToString() == "Todos" || string.IsNullOrEmpty(value.ToString()))
-            ItensSaidaViewModel = _itensSaidaViewModel.OrderByDescending(d => d.DT_SAIDA).ToList();
-        else
-            ItensSaidaViewModel = _itensSaidaViewModel.Where(i => i.NOME_BARRCA == value.ToString()).OrderByDescending(d => d.DT_SAIDA).ToList();
+        _selectBarraca = value.ToString();
+    }
+
+    public void BtnEdit(ItemSaidaViewModel dto)
+    {
+        _navigationManager.NavigateTo($"itemSaida/{dto.Id}");
+    }
+
+    public async void BtnRemove(ItemSaidaViewModel dto)
+    {
+        var response = await _httpClient.DeleteAsync($"itemSaida/{dto.Id}");
+        if (response.IsSuccessStatusCode)
+        {
+            ItensSaidaViewModel.Remove(dto);
+        }
+        StateHasChanged();
     }
 
 }

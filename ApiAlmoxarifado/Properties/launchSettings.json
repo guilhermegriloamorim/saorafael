@@ -1,6 +1,6 @@
-﻿{
+{
   "profiles": {
-    "almoxarifado": {
+    "ApiAlmoxarifado": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
@@ -9,6 +9,7 @@
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5200",
+      "nativeDebugging": true
     },
     "Docker": {
       "commandName": "Docker",

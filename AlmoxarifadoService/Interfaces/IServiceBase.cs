@@ -1,4 +1,6 @@
-﻿namespace AlmoxarifadoService.Interfaces
+﻿using Almoxarifado.Dominio.ViewModel;
+
+namespace AlmoxarifadoService.Interfaces
 {
     public interface IServiceBase
     {
@@ -29,6 +31,7 @@
     //ItemSaida
     public interface IServiceItemSaidaViewModel : IServiceBase
     {
+        Task<IList<ItemSaidaViewModel>> GetFillterAsync(string? barraca, string? data);
     }
     //UnidadeMedidaViewModel
     public interface IServiceUnidadeMedidaViewModel : IServiceBase
