@@ -54,9 +54,9 @@
                         <td>@dto.UNIDADE</td>
                         <td>@dto.QTD</td>
                         <td>
-                            <button type="button" class="btn btn-primary" @onclick="@(e => BtnEdit(dto))">
+                            @* <button type="button" class="btn btn-primary" @onclick="@(e => BtnEdit(dto))">
                                 <span class="oi oi-pencil"></span>
-                            </button>
+                            </button> *@
                             <button type="button" class="btn btn-danger" @onclick="@(e => BtnRemove(dto))">
                                 <span class="oi oi-circle-x"></span>
                             </button>
@@ -82,7 +82,7 @@ else
     private string MessageErro { get; set; } = string.Empty;
 
     private string _selectBarraca = string.Empty;
-    private DateTime? _dtPesquisaBarraca = null;
+    private DateTime? _dtPesquisaBarraca = @DateTime.Now;
     private DateTime DiaDaFesta = @DateTime.Now;
 
     private BarracaDtoRead BarracaDtoRead { get; set; } = new();
@@ -125,7 +125,7 @@ else
 
         var response = await _httpClient.GetFromJsonAsync<IList<ItemSaidaViewModel>>(uri);
         if (response.Any())
-            ItensSaidaViewModel.AddRange(response.ToArray());
+            ItensSaidaViewModel.AddRange(response.OrderByDescending(i=> i.DT_SAIDA).ToArray());
         else
             MessageErro = "Não foi possível carregar os itens de saida";
 
