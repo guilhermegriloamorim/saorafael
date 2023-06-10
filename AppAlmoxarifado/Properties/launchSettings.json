@@ -8,7 +8,7 @@
       },
       "dotnetRunMessages": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "http://localhost:5300;",
+      "applicationUrl": "http://192.168.15.15:5300;",
       "nativeDebugging": true
     }
   }
