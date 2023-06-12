@@ -41,16 +41,15 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseCors(x => x
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowAnyOrigin()
+    );
+
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
-
-
-app.UseCors(policy =>
-    policy.
-    AllowAnyOrigin()
-   .AllowAnyMethod()
-   .AllowAnyHeader()
-);
 
 app.UseAuthorization();
 
