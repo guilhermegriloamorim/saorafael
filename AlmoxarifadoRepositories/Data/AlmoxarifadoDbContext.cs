@@ -1,6 +1,5 @@
 ﻿using Almoxarifado.Dominio.Model;
 using Almoxarifado.Dominio.ViewModel;
-using AlmoxarifadoRepositories.Data.Configuration;
 using Microsoft.EntityFrameworkCore;
 namespace AlmoxarifadoRepositories.Data
 {
@@ -36,10 +35,25 @@ namespace AlmoxarifadoRepositories.Data
                        e.ToTable("UnidadeMedida");
                    });
 
-            modelBuilder.ApplyConfiguration(new BarracaConfiguration());
-            modelBuilder.ApplyConfiguration(new ItemConfiguration());
-            modelBuilder.ApplyConfiguration(new ItemEntradaConfiguration());
-            modelBuilder.ApplyConfiguration(new ItemSaidaConfiguration());
+
+            //varchar(255) por default
+            foreach (var property in modelBuilder.Model.GetEntityTypes()
+                               .SelectMany(e => e.GetProperties()
+                                              .Where(p => p.ClrType == typeof(string))))
+            {
+                property.SetColumnType("varchar(255)");
+            }
+
+            //aplicando as configurações das entidades
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AlmoxarifadoDbContext).Assembly);
+
+
+            //delete em cascata
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                relationship.DeleteBehavior = DeleteBehavior.Restrict;
+            }
+
 
             base.OnModelCreating(modelBuilder);
         }

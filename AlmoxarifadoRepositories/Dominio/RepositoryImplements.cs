@@ -3,8 +3,6 @@ using Almoxarifado.Dominio.ViewModel;
 using AlmoxarifadoRepositories.Data;
 using AlmoxarifadoRepositories.Dominio;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
-using System.Collections;
 using System.Globalization;
 
 namespace AlmoxarifadoRepositories.Interfaces

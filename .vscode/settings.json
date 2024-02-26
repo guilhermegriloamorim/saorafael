@@ -6,5 +6,6 @@
             "database": "${workspaceFolder:saorafael}/ApiAlmoxarifado/Almoxarifado.db",
             "name": "saorafel"
         }
-    ]
+    ],
+    "dotnet.defaultSolution": "saorafael.sln"
 }
